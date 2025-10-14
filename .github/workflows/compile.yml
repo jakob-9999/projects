@@ -21,4 +21,5 @@ jobs:
           java-version: '25'
 
       - name: Build application artifact
+        working-directory: server
         run: ./mvnw -DskipTests --batch-mode clean compile;
