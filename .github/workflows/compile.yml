@@ -19,6 +19,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
+          cache: maven
 
       # The mvnw file is not executable by default for the github workflow runner
       - name: Make Maven Wrapper executable
