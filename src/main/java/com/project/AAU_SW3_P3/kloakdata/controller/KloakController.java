@@ -14,7 +14,7 @@ public class KloakController {
     }
 
     @GetMapping(value= "/api/kloakopland", produces= "application/json")
-    public String hentKloakOpland() throws Exception {
+    public String henterKloakOpland() throws Exception {
         return kloakService.hentKloakOpland();
     }
 }
