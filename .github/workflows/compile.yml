@@ -20,6 +20,11 @@ jobs:
           distribution: temurin
           java-version: '25'
 
+      # The mvnw file is not executable by default for the github workflow runner
+      - name: Make Maven Wrapper executable
+        working-directory: server
+        run: chmod +x mvnw
+
       - name: Build application artifact
         working-directory: server
         run: ./mvnw -DskipTests --batch-mode clean compile;
