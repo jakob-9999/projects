@@ -1,4 +1,4 @@
-package com.project.AAU_SW3_P3;
+package com.project.aau.sw3.p3;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
