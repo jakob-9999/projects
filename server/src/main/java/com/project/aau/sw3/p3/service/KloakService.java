@@ -1,4 +1,4 @@
-package com.project.AAU_SW3_P3.kloakdata.service;
+package com.project.aau.sw3.p3.service;
 
 import org.springframework.stereotype.Service;
 import java.net.URI;

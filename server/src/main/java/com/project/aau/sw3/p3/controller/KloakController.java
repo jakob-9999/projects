@@ -1,6 +1,6 @@
-package com.project.AAU_SW3_P3.kloakdata.controller;
+package com.project.aau.sw3.p3.controller;
 
-import com.project.AAU_SW3_P3.kloakdata.service.KloakService;
+import com.project.aau.sw3.p3.service.KloakService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
