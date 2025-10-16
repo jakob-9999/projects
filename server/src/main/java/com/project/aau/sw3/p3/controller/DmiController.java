@@ -9,7 +9,7 @@ public class DmiController {
 
     private final DmiService dmiService;
 
-    // Constructor injection – Spring sørger for at give os en instans af DmiService
+    // Constructor injection – dette fortæller spring, at dmicontroller har brug for dmiservice.
     public DmiController(DmiService dmiService) {
         this.dmiService = dmiService;
     }

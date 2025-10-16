@@ -36,8 +36,6 @@ public class PrecipitationData {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
     //public double getPrecipitation() { return precipitation; }
     //public void setPrecipitation(double precipitation) { this.precipitation = precipitation; }
