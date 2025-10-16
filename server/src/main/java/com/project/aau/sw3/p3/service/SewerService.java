@@ -19,7 +19,7 @@ public class SewerService {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(URL)).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return response.body(); // Returns a JSON string
+        String  json = response.body();
+        return json; // Returns a JSON string
     }
 }

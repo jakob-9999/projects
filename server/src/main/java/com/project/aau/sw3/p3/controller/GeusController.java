@@ -1,15 +1,15 @@
 package com.project.aau.sw3.p3.controller;
 
-import com.project.aau.sw3.p3.service.geusService;
+import com.project.aau.sw3.p3.service.GeusService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class geusController {
+public class GeusController {
 
-    private final geusService geusService;
+    private final GeusService geusService;
 
-    public geusController(geusService geusService) {
+    public GeusController(GeusService geusService) {
         this.geusService = geusService;
     }
 

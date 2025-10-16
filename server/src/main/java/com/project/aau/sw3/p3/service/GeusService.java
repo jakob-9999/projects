@@ -5,8 +5,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 
 @Service
-public class geusService {
-    // indsæt et korrekt API URL når vi har det.
+public class GeusService {
+
+    // indsæt et korrekt API URL når vi har det( cecilie svarer mail).
     String GEUS_URL = "https://google.com";
 
     public String fetchGeusData(){
