@@ -1,8 +1,11 @@
 package com.project.aau.sw3.p3.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Map;
 
 @Service
 public class DmiService {
@@ -17,7 +20,7 @@ public class DmiService {
                     + "&parameter-name=rain-precipitation-rate"
                     + "&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
-    public String fetchDmiData() {
+    public Map <String, Object> fetchDmiData() {
         try {
             // For HTTP requests
             RestTemplate restTemplate = new RestTemplate();
@@ -28,14 +31,22 @@ public class DmiService {
             // Save as JSON String
             String json = response.getBody();
 
-            System.out.println("DMI API Response:");
-            System.out.println(json);
+            //converts JSON to a Map
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> data = mapper.readValue(json, Map.class);
 
-            // return in browser
-            return json;
+            System.out.println("DMI API Response:");
+            //System.out.println(json);
+
+            //just an example: will look at the type
+            System.out.println("JSON type: " + data.get("type"));
+
+            // return the map in browser
+            return data;
 
         } catch (Exception e) {
-            return "Error fetching DMI data: " + e.getMessage();
+            //returns error as JSON
+            return Map.of("error", "Fejl ved hentning af DMI data: " + e.getMessage());
         }
     }
 }
