@@ -80,8 +80,8 @@ public class DmiService {
             //convert to the model class "TotalPrecipitation"
             TotalPrecipitation tp = mapper.convertValue(totalPrecipObj, TotalPrecipitation.class);
 
-            System.out.println("Antal værdier: " + tp.getValues().size());
-            System.out.println("Første værdi: " + tp.getValues().get(0));
+            System.out.println("Number of values: " + tp.getValues().size());
+            System.out.println("First value: " + tp.getValues().get(0));
 
 
             //just an example: will look at the type
