@@ -1,5 +1,6 @@
 package com.project.aau.sw3.p3.controller;
 
+import com.project.aau.sw3.p3.model.TotalPrecipitation;
 import com.project.aau.sw3.p3.service.DmiService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,11 @@ public class DmiController {
     public Map<String, Object> getDmiData() {
         // Calls fetchDmiData from DmiService and that method returns json, why it shows in browser
             return dmiService.fetchDmiData();
+    }
+
+    @GetMapping("/api/dmi/precipitation")
+    public TotalPrecipitation getTotalPrecipitation() {
+        return dmiService.fetchTotalPrecipitation();
     }
 }
 
