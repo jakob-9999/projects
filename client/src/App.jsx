@@ -27,15 +27,18 @@ export default function AppMap(){
         }).addTo(map);
 
 
-        /* Kode til at vise Aarhus grænse
-        fetch('/data/aarhus-boundary.geojson')
+        // Kode til at vise Aarhus grænse
+        /*fetch('/data/aarhus-boundary.geojson')
             .then((response) => response.json())
             .then((geojsonData) => {
                 const outline = L.geoJSON(geojsonData, {
                     style: {
-                        color: '#ff4d4d', // red outline color
-                        weight: 1,        // line thickness
-                        fill: false,      // no filled area
+                        color: '#ff4d4d', // grænse-linje farve
+                        weight: 1,        // linje tykkelse
+                        fill: true, // område fyldt
+                        fillColor: '#ff4d4d', // område farve
+                        fillOpacity: 0.3, // hvor farvet: 0=fuldt transparent, 1=helt farvet
+
                     },
                 }).addTo(map);
 
@@ -45,7 +48,7 @@ export default function AppMap(){
             .catch((error) => {
                 console.error('Error loading Aarhus boundary:', error);
             });
-            */
+        */
 
 
         return() => map.remove();
