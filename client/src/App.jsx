@@ -55,7 +55,7 @@ export default function AppMap(){
 
 
         //Fetches our backend data thorugh Spring boot API, There's a proxy in vite.config.js
-        fetch('/api/kloakopland')
+        fetch('/api/sewageland')
             .then((res) => res.json())
             .then((data) => {
                 console.log("Raw data:", data);
