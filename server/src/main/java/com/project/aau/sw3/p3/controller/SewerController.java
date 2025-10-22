@@ -21,16 +21,20 @@ public class SewerController {
         this.sewerDataRepo = sewerDataRepo;
     }
 
-    @GetMapping(value= "/api/kloakopland", produces= "application/json")
+    @GetMapping(value= "/api/sewageland", produces= "application/json")
     public String getSewageFromService() throws Exception {
-        return sewerService.getSewageLand();
+        return sewerService.saveAndGetSewageLand();
     }
 
-    @GetMapping("/api/kloakopland/gemtData")
+
+    @GetMapping("/api/sewerdata")
+    //returns list of sewerData objects
     public List<SewerData> getSavedSewerData() {
-        return sewerDataRepo.findAll(); //returns list of sewerData objects
+
         //sewerDataRepo.findAll() is a method that makes SQL request like SELECT * FROM sewer_data
-        //maps each row to sewerData object
+        //it maps each row to sewerData object
         //collects all objects in List<SewerData>
+        return sewerDataRepo.findAll();
+
     }
 }

@@ -13,9 +13,18 @@ public class SewerData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //primary key
 
-    @Column(columnDefinition = "TEXT") //tells jpa (Java Persistence API) that the column in db should contain large amount of text
-    private String coordinates;        //saves coordinates as json-string
-    private String sewerType;          //vaerd1201a
+    //tells jpa (Java Persistence API) that the column in db should contain large amount of text
+    @Column(columnDefinition = "TEXT")
+    //saves coordinates as json-string
+    private String coordinates;
+
+    @Column(columnDefinition = "TEXT")
+    //saves vaerd1201a as json string
+    private String sewerType;
+
+    @Column(columnDefinition = "TEXT")
+    //saves coordinateReferenceSystem as as EPSG25832
+    private String coordinateReferenceSystem = "EPSG25832";
 
     //no argument contructor is required for JPA to work
     public SewerData() {
@@ -36,11 +45,19 @@ public class SewerData {
         return sewerType;
     }
 
+    public String getCoordinateReferenceSystem() {
+        return coordinateReferenceSystem;
+    }
+
     public void setCoordinates(String coordinates) {
         this.coordinates = coordinates;
     }
 
     public void setSewerType(String sewerType) {
         this.sewerType = sewerType;
+    }
+
+    public void setCoordinateReferenceSystem(String coordinateReferenceSystem) {
+        this.coordinateReferenceSystem = coordinateReferenceSystem;
     }
 }
