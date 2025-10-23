@@ -28,5 +28,10 @@ public class DmiController {
     public TotalPrecipitation getTotalPrecipitation() {
         return dmiService.fetchTotalPrecipitation();
     }
+
+    @GetMapping("/api/dmi/point")
+    public DmiPoint getDmiPoint() {
+        return dmiService.fetchDmiPoint();
+    }
 }
 
