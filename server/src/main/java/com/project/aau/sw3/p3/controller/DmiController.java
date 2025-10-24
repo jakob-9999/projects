@@ -1,6 +1,7 @@
 package com.project.aau.sw3.p3.controller;
 
 import com.project.aau.sw3.p3.model.TotalPrecipitation;
+import com.project.aau.sw3.p3.model.DmiPoint;
 import com.project.aau.sw3.p3.service.DmiService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

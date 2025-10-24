@@ -13,35 +13,28 @@ public class DmiPoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //primary key
 
-    @Column(columnDefinition = "TEXT")
-    //saves precipitationValues as json-string
-    private String precipitationValues;
+    //saves precipitationValues as List<Double>
+    private List<Double> precipitationValues;
 
-    //tells jpa (Java Persistence API) that the column in db should contain large amount of text
-    @Column(columnDefinition = "TEXT")
-    //saves x-values as json-string
-    private String xValues;
+    //saves x-values as List<Double>
+    private List<Double> xValues;
 
-    @Column(columnDefinition = "TEXT")
-    //saves x-bounds as json-string
-    private String xBounds;
+    //saves x-bounds as List<Double>
+    private List<Double> xBounds;
 
-    @Column(columnDefinition = "TEXT")
-    //saves y-values as json-string
-    private String yValues;
+    //saves y-values as List<Double>
+    private List<Double> yValues;
 
-    @Column(columnDefinition = "TEXT")
-    //saves y-bounds as json-string
-    private String yBounds;
+    //saves y-bounds as List<Double>
+    private List<Double> yBounds;
 
-    @Column(columnDefinition = "TEXT")
-    //saves timeValues as json-string
-    private String timeValues;
+    //saves timeValues as List<Double>
+    private List<String> timeValues;
 
     public DmiPoint() {
     }
 
-    public DmiPoint(String precipitationValues, String xValues, String xBounds, String yValues, String yBounds, String timeValues) {
+    public DmiPoint(List<Double> precipitationValues, List<Double> xValues, List<Double> xBounds, List<Double> yValues, List<Double> yBounds, List<String> timeValues) {
         this.precipitationValues = precipitationValues;
         this.xValues = xValues;
         this.xBounds = xBounds;
@@ -50,54 +43,51 @@ public class DmiPoint {
         this.timeValues = timeValues;
     }
 
-    public String getPrecipitationValues() {
+    public List<Double> getPrecipitationValues() {
         return precipitationValues;
     }
 
-    public void setPrecipitationValues(String precipitationValues) {
+    public void setPrecipitationValues(List<Double> precipitationValues) {
         this.precipitationValues = precipitationValues;
     }
 
-    public String getxValues() {
+    public List<Double> getxValues() {
         return xValues;
     }
 
-    public void setxValues(String xValues) {
+    public void setxValues(List<Double> xValues) {
         this.xValues = xValues;
     }
 
-    public String getxBounds() {
+    public List<Double> getxBounds() {
         return xBounds;
     }
 
-    public void setxBounds(String xBounds) {
+    public void setxBounds(List<Double> xBounds) {
         this.xBounds = xBounds;
     }
 
-    public String getyValues() {
+    public List<Double> getyValues() {
         return yValues;
     }
 
-    public void setyValues(String yValues) {
+    public void setyValues(List<Double> yValues) {
         this.yValues = yValues;
     }
 
-    public String getyBounds() {
+    public List<Double> getyBounds() {
         return yBounds;
     }
 
-    public void setyBounds(String yBounds) {
+    public void setyBounds(List<Double> yBounds) {
         this.yBounds = yBounds;
     }
 
-    public String getTimeValues() {
+    public List<String> getTimeValues() {
         return timeValues;
     }
 
-    public void setTimeValues(String timeValues) {
+    public void setTimeValues(List<String> timeValues) {
         this.timeValues = timeValues;
     }
 }
-
-
-

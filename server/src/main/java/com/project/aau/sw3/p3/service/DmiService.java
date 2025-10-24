@@ -2,11 +2,17 @@ package com.project.aau.sw3.p3.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.aau.sw3.p3.model.TotalPrecipitation;
+import com.project.aau.sw3.p3.model.DmiPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
-
+import java.util.List;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 import java.util.Map;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.project.aau.sw3.p3.repository.DmiPointRepo;
+
 
 @Service
 public class DmiService {
@@ -97,23 +103,6 @@ public class DmiService {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public DmiPoint fetchDmiPoint() {
         try {
             // For HTTP requests
@@ -125,9 +114,7 @@ public class DmiService {
             // Save as JSON String
             String json = response.getBody();
 
-
-
-
+            //Create ObjectMapper to convert JSON strings into Java objects
             ObjectMapper mapper = new ObjectMapper();
 
             //converts the whole JSON to a Map
@@ -135,37 +122,60 @@ public class DmiService {
 
             //get the "ranges" part from the json
             Map<String, Object> ranges = (Map<String, Object>) root.get("ranges");
+
             //get the "total-precipitation" part from the "ranges"-part
             Map<String, Object> totalPrecipitation = (Map<String, Object>) ranges.get("total-precipitation");
+
             //get the "values" from "total-precipitation" part, and save it as a list
-            List<float> precipitationValues = totalPrecipitation.get("values");
+            //totalPrecipitation.get("values") returns List<Object>, not List<Double>. Must be converted
+            //mapper.convertValue takes two arguments: 1) what to convert, 2) what I want it converted to
+            //TypeReference is an anonymous type that tells Jackson what type i want
+            List<Double> precipitationValues = mapper.convertValue(totalPrecipitation.get("values"),
+                    new TypeReference<List<Double>>() {}
+            );
 
             //get the "domain" part from the json
             Map<String, Object> domain = (Map<String, Object>) root.get("domain");
+
             //get the "axes" part from the "domain"-part
             Map<String, Object> axes = (Map<String, Object>) domain.get("axes");
 
             //get the "x" part from the "axes"-part
             Map<String, Object> x = (Map<String, Object>) axes.get("x");
-            //get the "values" from "x" part, and save it as a float
-            float xValues = x.get("values");
-            //get the "bounds" from "x" part, and save it as a list of floats
-            List<float> xBounds = x.get("bounds");
+
+            //get the "values" from "x" part, convert to List<Double> and save it
+            List<Double> xValues = mapper.convertValue(x.get("values"),
+                    new TypeReference<List<Double>>() {}
+            );
+
+            //get the "bounds" from "x" part, convert to List<Double> and save it
+            List<Double> xBounds = mapper.convertValue(x.get("bounds"),
+                    new TypeReference<List<Double>>() {}
+            );
 
             //get the "y" part from the "axes"-part
             Map<String, Object> y = (Map<String, Object>) axes.get("y");
-            //get the "values" from "y" part, and save it as a float
-            float yValues = y.get("values");
-            //get the "bounds" from "x" part, and save it as a list of floats
-            List<float> yBounds = y.get("bounds");
+
+            //get the "values" from "y" part, convert to List<Double> and save it
+            List<Double> yValues = mapper.convertValue(y.get("values"),
+                    new TypeReference<List<Double>>() {}
+            );
+
+            //get the "bounds" from "x" part, convert to List<Double> and save it
+            List<Double> yBounds = mapper.convertValue(y.get("bounds"),
+                    new TypeReference<List<Double>>() {}
+            );
 
             //get the "t" part from the "axes"-part
             Map<String, Object> t = (Map<String, Object>) axes.get("t");
-            //get the "values" from "t" part, and save it as a list of strings
-            List<String> tValues = t.get("values");
 
+            //get the "valurs" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
+            List<String> tValues = mapper.convertValue(t.get("values"),
+                    new TypeReference<List<String>>() {}
+            );
 
-
+            //make a new map where the above collected values (lists of doubles/strings) are stored
+            //before converting the map into the DmiPoint model class
             Map<String, Object> dmiPoint = new HashMap<>();
             dmiPoint.put("precipitationValues", precipitationValues);
             dmiPoint.put("xValues", xValues);
@@ -174,13 +184,16 @@ public class DmiService {
             dmiPoint.put("yBounds", yBounds);
             dmiPoint.put("timeValues", tValues);
 
-
-
-            //convert to the model class "TotalPrecipitation"
+            //convert to the model class "DmiPoint"
             DmiPoint dp = mapper.convertValue(dmiPoint, DmiPoint.class);
 
 
-            // return the map in browser
+
+
+            //to save in db
+
+
+            //return the map in browser
             return dp;
 
         } catch (Exception e) {
