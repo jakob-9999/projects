@@ -12,10 +12,21 @@ import java.util.stream.Collectors;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.project.aau.sw3.p3.repository.DmiPointRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 
 @Service
 public class DmiService {
+
+    private final DmiPointRepo dmiPointRepo;
+
+    //@Autowired lets us create an instance of a class
+    @Autowired
+    //constructor
+    public DmiService(DmiPointRepo dmiPointRepo) {
+        this.dmiPointRepo = dmiPointRepo;
+    }
 
     // API Url der henter data ( 4 parametre)
     String DMI_URL =
@@ -174,24 +185,11 @@ public class DmiService {
                     new TypeReference<List<String>>() {}
             );
 
-            //make a new map where the above collected values (lists of doubles/strings) are stored
-            //before converting the map into the DmiPoint model class
-            Map<String, Object> dmiPoint = new HashMap<>();
-            dmiPoint.put("precipitationValues", precipitationValues);
-            dmiPoint.put("xValues", xValues);
-            dmiPoint.put("xBounds", xBounds);
-            dmiPoint.put("yValues", yValues);
-            dmiPoint.put("yBounds", yBounds);
-            dmiPoint.put("timeValues", tValues);
+            //create DmiPoint object
+            DmiPoint dp = new DmiPoint(precipitationValues, xValues, xBounds, yValues, yBounds, tValues);
 
-            //convert to the model class "DmiPoint"
-            DmiPoint dp = mapper.convertValue(dmiPoint, DmiPoint.class);
-
-
-
-
-            //to save in db
-
+            //save in db
+            dmiPointRepo.save(dp);
 
             //return the map in browser
             return dp;
