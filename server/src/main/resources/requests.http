@@ -1,1 +1,7 @@
+### sewageland data
 POST localhost:8080/api/sewageland
+
+
+
+### dmiPoint data
+POST localhost:8080/api/dmi/point

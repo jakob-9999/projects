@@ -21,8 +21,6 @@ public class DmiService {
 
     private final DmiPointRepo dmiPointRepo;
 
-    //@Autowired lets us create an instance of a class
-    @Autowired
     //constructor
     public DmiService(DmiPointRepo dmiPointRepo) {
         this.dmiPointRepo = dmiPointRepo;
@@ -114,7 +112,7 @@ public class DmiService {
         }
     }
 
-    public DmiPoint fetchDmiPoint() {
+    public DmiPoint fetchDmiDiniDataAndSave() {
         try {
             // For HTTP requests
             RestTemplate restTemplate = new RestTemplate();
@@ -186,13 +184,13 @@ public class DmiService {
             );
 
             //create DmiPoint object
-            DmiPoint dp = new DmiPoint(precipitationValues, xValues, xBounds, yValues, yBounds, tValues);
+            DmiPoint dmiPoint = new DmiPoint(precipitationValues, xValues, xBounds, yValues, yBounds, tValues);
 
             //save in db
-            dmiPointRepo.save(dp);
+            dmiPointRepo.save(dmiPoint);
 
             //return the map in browser
-            return dp;
+            return dmiPoint;
 
         } catch (Exception e) {
             //error message in console. tells where in the code it went wrong
