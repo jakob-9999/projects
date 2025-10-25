@@ -29,7 +29,7 @@ public class DmiService {
     }
 
     // API Url der henter data ( 4 parametre)
-    String DMI_URL =
+    private static final String DMI_URL =
             "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf/position"
                     + "?coords=POINT(10.2039 56.1629)"
                     + "&parameter-name=total-precipitation"
