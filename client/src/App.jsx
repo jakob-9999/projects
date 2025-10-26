@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { useEffect, useRef} from "react";
 import L from "leaflet";
-import 'leaflet/dist/leaflet.css';
-import './App.css'
+import "leaflet/dist/leaflet.css";
+import "./App.css";
 import IDFChart from './components/IDFChart';
 import proj4 from "proj4"; //JavaScript library that converts a coordinates system to another, npm install proj4
+import { MapContainer, TileLayer } from "react-leaflet";
+import SewagelandLayer from "./components/MapAndSewageland";
+import PrecipitationLayer from "./components/PrecipitationDummyData";
 
 // Define the coordinate system used in your data (UTM zone 32N / ETRS89)
-proj4.defs("EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs");
+/*proj4.defs("EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs");
 
 function App() {
   const [count, setCount] = useState(0)
@@ -55,7 +58,7 @@ export default function AppMap(){
 
 
         //Fetches our backend data thorugh Spring boot API, There's a proxy in vite.config.js
-        fetch('/api/sewageland')
+   /*     fetch('/api/sewageland')
             .then((res) => res.json())
             .then((data) => {
                 console.log("Raw data:", data);
@@ -118,6 +121,60 @@ export default function AppMap(){
     return (
         <div style={{ height: '100vh', width: '100%' }}>
             <div id="map" ref={mapEl}></div>
+        </div>
+    );
+}
+
+export  function MyRainApp() {
+    const [precipitationData] = useState([
+        { lat: 56.16, lon: 10.20, intensity: 0, time: "2025-10-24 12:00" },
+        { lat: 56.18, lon: 10.22, intensity: 3, time: "2025-10-24 12:00" },
+        { lat: 56.14, lon: 10.19, intensity: 8, time: "2025-10-24 12:00" },
+        { lat: 56.20, lon: 10.25, intensity: 12, time: "2025-10-24 12:00" },
+    ]);
+
+    return (
+        <div>
+            <h2 style={{ textAlign: "center", marginTop: "1rem" }}>
+                Dummy Precipitation Map
+            </h2>
+            <RainApp precipitationData={precipitationData} />
+        </div>
+    );
+}
+*/
+
+export default function MapRoot() {
+    return (
+        <div
+            style={{
+                height: "100vh",
+                width: "100vw",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                background: "#1e1e1e",
+            }}
+        >
+            <MapContainer
+                center={[56.1629, 10.2039]}
+                zoom={11}
+                style={{
+                    height: "90vh",
+                    width: "90vw",
+                    borderRadius: "12px",
+                    boxShadow: "0 0 20px rgba(0,0,0,0.4)",
+                }}
+            >
+                <TileLayer
+                    url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                />
+
+                {/* Layer components */}
+                <SewagelandLayer />
+                <PrecipitationLayer />
+            </MapContainer>
         </div>
     );
 }
