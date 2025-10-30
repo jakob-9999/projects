@@ -7,7 +7,7 @@ public class TotalPrecipitation {
     private String dataType;
     private List<String> axisNames;
     private List<Integer> shape;
-    private List<Float> values;
+    private List<Double> values;
 
     //getters and setters
 
@@ -43,11 +43,11 @@ public class TotalPrecipitation {
         this.shape = shape;
     }
 
-    public List<Float> getValues() {
+    public List<Double> getValues() {
         return values;
     }
 
-    public void setValues(List<Float> values) {
+    public void setValues(List<Double> values) {
         this.values = values;
     }
 }
