@@ -31,7 +31,10 @@ export default function SewagelandLayer() {
     const map = useMap();
 
     useEffect(() => {
-        fetch("/api/sewageland")
+        fetch("/api/sewageland", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+        })
             .then((res) => res.json())
             .then((raw) => {
                 const converted = convertToWGS84(raw);
