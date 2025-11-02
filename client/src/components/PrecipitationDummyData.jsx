@@ -1,5 +1,7 @@
 import { CircleMarker, Popup } from "react-leaflet";
 
+// Dummy data for precipitation layer
+// The function returns a list of precipitation points with their intensity and time.
 export default function PrecipitationLayer() {
     const precipitationData = [
         { lat: 56.16, lon: 10.20, intensity: 0, time: "2025-10-24 12:00" },

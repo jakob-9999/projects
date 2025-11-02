@@ -5,6 +5,7 @@ import proj4 from "proj4";
 
 proj4.defs("EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs");
 
+// Function to convert GeoJSON coordinates from 25832 to WGS84
 const convertToWGS84 = (geojson) => ({
     ...geojson,
     features: geojson.features.map((f) => ({
@@ -23,6 +24,8 @@ const convertToWGS84 = (geojson) => ({
     })),
 });
 
+// Component to render the Sewageland layer.
+// It fetches the GeoJSON data from the server and renders it on the map.
 export default function SewagelandLayer() {
     const [data, setData] = useState(null);
     const map = useMap();

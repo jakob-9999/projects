@@ -6,7 +6,7 @@ import "./App.css";
 import IDFChart from './components/IDFChart';
 import proj4 from "proj4"; //JavaScript library that converts a coordinates system to another, npm install proj4
 import { MapContainer, TileLayer } from "react-leaflet";
-import SewagelandLayer from "./components/MapAndSewageland";
+import SewagelandLayer from "./components/Sewageland";
 import PrecipitationLayer from "./components/PrecipitationDummyData";
 
 // Define the coordinate system used in your data (UTM zone 32N / ETRS89)
@@ -144,6 +144,7 @@ export  function MyRainApp() {
 }
 */
 
+// This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
     return (
         <div
