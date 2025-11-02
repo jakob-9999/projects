@@ -21,11 +21,10 @@ public class SewerController {
         this.sewerDataRepo = sewerDataRepo;
     }
 
-    @GetMapping(value= "/api/sewageland", produces= "application/json")
+    @PostMapping(value= "/api/sewageland", produces= "application/json")
     public String getSewageFromService() throws Exception {
         return sewerService.saveAndGetSewageLand();
     }
-
 
     @GetMapping("/api/sewerdata")
     //returns list of sewerData objects
