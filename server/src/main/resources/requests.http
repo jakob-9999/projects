@@ -1,7 +1,8 @@
 ### sewageland data
 POST localhost:8080/api/sewageland
 
+### persists a Point of the DINI model from DMI Open Data
+POST localhost:8080/api/dmi-dini/point
 
-
-### dmiPoint data
-POST localhost:8080/api/dmi/point
+### returns a DmiPoint from our DB
+localhost:8080/api/dmi-dini/point

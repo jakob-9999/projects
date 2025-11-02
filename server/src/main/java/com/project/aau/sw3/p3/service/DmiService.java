@@ -7,23 +7,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.project.aau.sw3.p3.repository.DmiPointRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-
 
 
 @Service
 public class DmiService {
 
     private final DmiPointRepo dmiPointRepo;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     //constructor
-    public DmiService(DmiPointRepo dmiPointRepo) {
+    public DmiService(DmiPointRepo dmiPointRepo, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.dmiPointRepo = dmiPointRepo;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     // API Url der henter data ( 4 parametre)
@@ -31,16 +31,11 @@ public class DmiService {
             "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf/position"
                     + "?coords=POINT(10.2039 56.1629)"
                     + "&parameter-name=total-precipitation"
-                    + "&parameter-name=precipitation-type"
-                    + "&parameter-name=time-integral-of-total-solid-precipitation-flux"
-                    + "&parameter-name=rain-precipitation-rate"
                     + "&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
     public Map <String, Object> fetchDmiData() {
         try {
             // For HTTP requests
-            RestTemplate restTemplate = new RestTemplate();
-
             // GET-request to DMI’s API, get answer as String)
             ResponseEntity<String> response = restTemplate.getForEntity(DMI_URL, String.class);
 
@@ -48,8 +43,7 @@ public class DmiService {
             String json = response.getBody();
 
             //converts JSON to a Map
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> data = mapper.readValue(json, Map.class);
+            Map<String, Object> data = objectMapper.readValue(json, Map.class);
 
             System.out.println("DMI API Response:");
             //System.out.println(json);
@@ -69,8 +63,6 @@ public class DmiService {
     public TotalPrecipitation fetchTotalPrecipitation() {
         try {
             // For HTTP requests
-            RestTemplate restTemplate = new RestTemplate();
-
             // GET-request to DMI’s API, get answer as String)
             ResponseEntity<String> response = restTemplate.getForEntity(DMI_URL, String.class);
 
@@ -81,10 +73,8 @@ public class DmiService {
             //System.out.println(json);
 
 
-            ObjectMapper mapper = new ObjectMapper();
-
             //converts the whole JSON to a Map
-            Map<String, Object> root = mapper.readValue(json, Map.class);
+            Map<String, Object> root = objectMapper.readValue(json, Map.class);
 
             //get the "ranges" part from the json
             Map<String, Object> ranges = (Map<String, Object>) root.get("ranges");
@@ -93,7 +83,7 @@ public class DmiService {
             Object totalPrecipObj = ranges.get("total-precipitation");
 
             //convert to the model class "TotalPrecipitation"
-            TotalPrecipitation tp = mapper.convertValue(totalPrecipObj, TotalPrecipitation.class);
+            TotalPrecipitation tp = objectMapper.convertValue(totalPrecipObj, TotalPrecipitation.class);
 
             System.out.println("Number of values: " + tp.getValues().size());
             System.out.println("First value: " + tp.getValues().get(0));
@@ -112,11 +102,9 @@ public class DmiService {
         }
     }
 
-    public DmiPoint fetchDmiDiniDataAndSave() {
+    public void saveDmiDiniPoint() {
         try {
             // For HTTP requests
-            RestTemplate restTemplate = new RestTemplate();
-
             // GET-request to DMI’s API, get answer as String)
             ResponseEntity<String> response = restTemplate.getForEntity(DMI_URL, String.class);
 
@@ -124,10 +112,8 @@ public class DmiService {
             String json = response.getBody();
 
             //Create ObjectMapper to convert JSON strings into Java objects
-            ObjectMapper mapper = new ObjectMapper();
-
             //converts the whole JSON to a Map
-            Map<String, Object> root = mapper.readValue(json, Map.class);
+            Map<String, Object> root = objectMapper.readValue(json, Map.class);
 
             //get the "ranges" part from the json
             Map<String, Object> ranges = (Map<String, Object>) root.get("ranges");
@@ -139,7 +125,7 @@ public class DmiService {
             //totalPrecipitation.get("values") returns List<Object>, not List<Double>. Must be converted
             //mapper.convertValue takes two arguments: 1) what to convert, 2) what I want it converted to
             //TypeReference is an anonymous type that tells Jackson what type i want
-            List<Double> precipitationValues = mapper.convertValue(totalPrecipitation.get("values"),
+            List<Double> precipitationValues = objectMapper.convertValue(totalPrecipitation.get("values"),
                     new TypeReference<List<Double>>() {}
             );
 
@@ -153,12 +139,12 @@ public class DmiService {
             Map<String, Object> x = (Map<String, Object>) axes.get("x");
 
             //get the "values" from "x" part, convert to List<Double> and save it
-            List<Double> xValues = mapper.convertValue(x.get("values"),
+            List<Double> xValues = objectMapper.convertValue(x.get("values"),
                     new TypeReference<List<Double>>() {}
             );
 
             //get the "bounds" from "x" part, convert to List<Double> and save it
-            List<Double> xBounds = mapper.convertValue(x.get("bounds"),
+            List<Double> xBounds = objectMapper.convertValue(x.get("bounds"),
                     new TypeReference<List<Double>>() {}
             );
 
@@ -166,12 +152,12 @@ public class DmiService {
             Map<String, Object> y = (Map<String, Object>) axes.get("y");
 
             //get the "values" from "y" part, convert to List<Double> and save it
-            List<Double> yValues = mapper.convertValue(y.get("values"),
+            List<Double> yValues = objectMapper.convertValue(y.get("values"),
                     new TypeReference<List<Double>>() {}
             );
 
             //get the "bounds" from "x" part, convert to List<Double> and save it
-            List<Double> yBounds = mapper.convertValue(y.get("bounds"),
+            List<Double> yBounds = objectMapper.convertValue(y.get("bounds"),
                     new TypeReference<List<Double>>() {}
             );
 
@@ -179,7 +165,7 @@ public class DmiService {
             Map<String, Object> t = (Map<String, Object>) axes.get("t");
 
             //get the "valurs" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
-            List<String> tValues = mapper.convertValue(t.get("values"),
+            List<String> tValues = objectMapper.convertValue(t.get("values"),
                     new TypeReference<List<String>>() {}
             );
 
@@ -189,13 +175,9 @@ public class DmiService {
             //save in db
             dmiPointRepo.save(dmiPoint);
 
-            //return the map in browser
-            return dmiPoint;
-
         } catch (Exception e) {
             //error message in console. tells where in the code it went wrong
             e.printStackTrace();
-            return null;
         }
     }
 }
