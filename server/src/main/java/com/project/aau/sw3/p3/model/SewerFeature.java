@@ -27,4 +27,8 @@ public class SewerFeature {
         this.feature = feature;
     }
 
+    public JsonNode getFeature() {
+        return this.feature;
+    }
+
 }

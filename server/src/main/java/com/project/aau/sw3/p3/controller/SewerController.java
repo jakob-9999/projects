@@ -1,5 +1,6 @@
 package com.project.aau.sw3.p3.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.project.aau.sw3.p3.service.SewerFeatureService;
 import com.project.aau.sw3.p3.service.SewerService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.aau.sw3.p3.model.SewerData;
 import com.project.aau.sw3.p3.repository.SewerDataRepo;
 import java.util.List;
-
 
 @RestController
 public class SewerController {
@@ -28,9 +28,14 @@ public class SewerController {
         return sewerService.saveAndGetSewageLand();
     }
 
-    @PostMapping( "/api/sewageland/feature-collection")
+    @PostMapping( "/api/sewageland/features")
     public void createSewagelandFeatureCollection() {
         sewerFeatureService.createSewagelandFeatureCollection();
+    }
+
+    @GetMapping("/api/sewageland/features")
+    public ObjectNode getSewagelandFeatureCollection() {
+        return sewerFeatureService.buildSewerFeatureCollection();
     }
 
     @GetMapping("/api/sewerdata")
@@ -41,6 +46,5 @@ public class SewerController {
         //it maps each row to sewerData object
         //collects all objects in List<SewerData>
         return sewerDataRepo.findAll();
-
     }
 }
