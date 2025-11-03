@@ -19,11 +19,12 @@ public class SewerService {
         this.sewerDataRepo = sewerDataRepo;
     }
 
+    // Currently hardcoded to a bbox around Aarhus municipality using EPSG:25832 CRS
     private static final String URL = "https://geoserver.plandata.dk/geoserver/wfs"
             + "?service=WFS&version=2.0.0&request=GetFeature"
             + "&typeNames=pdk:theme_pdk_kloakopland_vedtaget_v"
             + "&outputFormat=application/json"
-            + "&bbox=565000,6228000,585000,6242000,EPSG:25832";
+            + "&bbox=566487.6742,6218236.0206,578426.1126,6228805.4170,EPSG:25832";
 
     public String saveAndGetSewageLand() throws Exception {
         HttpClient client = HttpClient.newHttpClient();

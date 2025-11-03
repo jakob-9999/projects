@@ -26,7 +26,6 @@ public class SewerController {
         return sewerService.saveAndGetSewageLand();
     }
 
-
     @GetMapping("/api/sewerdata")
     //returns list of sewerData objects
     public List<SewerData> getSavedSewerData() {
