@@ -1,12 +1,6 @@
 import {useEffect, useState} from "react";
 import {GeoJSON, useMap} from "react-leaflet";
 import {geoJSON} from "leaflet";
-import proj4 from "proj4";
-import {sewerDataToWgs84FeatureCollection} from "./util/SewagelandFeatureCollection.js";
-
-proj4.defs("EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs");
-
-
 
 // Component to render the Sewageland layer.
 // It fetches the GeoJSON data from the server and renders it on the map.
@@ -15,12 +9,11 @@ export default function SewagelandLayer() {
     const map = useMap();
 
     useEffect(() => {
-        fetch("/api/sewerdata")
+        fetch("/api/sewageland/features")
             .then((res) => res.json())
             .then((raw) => {
-                const converted = sewerDataToWgs84FeatureCollection(raw);
-                setData(converted);
-                const bounds = geoJSON(converted).getBounds();
+                setData(raw);
+                const bounds = geoJSON(raw).getBounds();
                 map.fitBounds(bounds);
             })
             .catch((err) => console.error("Error fetching geoJSON:", err));
@@ -39,7 +32,7 @@ export default function SewagelandLayer() {
         <GeoJSON
             data={data}
             style={(feature) => {
-                const type = feature.properties;
+                const type = feature.properties.vaerd1201a;
                 const color = getColor(type);
                 return {
                     fillColor: color, // Color of the polygon
@@ -49,7 +42,7 @@ export default function SewagelandLayer() {
                 };
             }}
             onEachFeature={(feature, layer) => {
-                layer.bindPopup(`${feature.properties}`);
+                layer.bindPopup(`${feature.properties.vaerd1201a}`);
             }}
         />
     );

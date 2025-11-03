@@ -25,9 +25,9 @@ public class SewerFeatureService {
     private static final CoordinateTransform TRANSFORM_25832_TO_4326;
     static {
         CRSFactory crsFactory = new CRSFactory();
-        CoordinateReferenceSystem UTM = crsFactory.createFromParameters("UTM",
-                "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
-        CoordinateReferenceSystem WGS84 = crsFactory.createFromParameters("WGS84",
+        CoordinateReferenceSystem UTM = crsFactory.createFromParameters("epsg:25832",
+                "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+        CoordinateReferenceSystem WGS84 = crsFactory.createFromParameters("epsg:4326",
                 "+proj=longlat +datum=WGS84 +no_defs");
         CoordinateTransformFactory ctFactory = new CoordinateTransformFactory();
         TRANSFORM_25832_TO_4326 = ctFactory.createTransform(UTM, WGS84);
@@ -68,7 +68,6 @@ public class SewerFeatureService {
         ArrayList<SewerFeature> sewerFeatures = new ArrayList<>();
         for (JsonNode feature : features) {
             ObjectNode geometry = (ObjectNode) feature.get("geometry");
-            geometry.put("CRS", "EPSG:4326");
 
             ObjectNode properties = (ObjectNode) feature.get("properties");
             String vaerd1201a = properties.get("vaerd1201a").asText(null);
@@ -79,7 +78,9 @@ public class SewerFeatureService {
 
             reprojectGeometry25832To4326(geometry);
 
-            ObjectNode neededProperties = objectMapper.createObjectNode().put("vaerd1201a", vaerd1201a);
+            ObjectNode neededProperties = objectMapper.createObjectNode()
+                    .put("vaerd1201a", vaerd1201a)
+                    .put("CRS", "EPSG:4326");
             ObjectNode newFeature = objectMapper.createObjectNode();
             newFeature.put("type", "Feature");
             newFeature.set("geometry", geometry);
@@ -91,6 +92,26 @@ public class SewerFeatureService {
         // We always want the newest data when we fetch this, so we just delete what is already in the DB
         sewerFeatureRepo.deleteAll(sewerFeatureRepo.findAll());
         sewerFeatureRepo.saveAll(sewerFeatures);
+    }
+
+    public ObjectNode buildSewerFeatureCollection() {
+        ObjectNode featureCollection = objectMapper.createObjectNode();
+
+        featureCollection.put("type", "FeatureCollection");
+        ArrayNode features = objectMapper.createArrayNode();
+
+        sewerFeatureRepo.findAll().forEach(sewerFeature -> {
+            String feature = sewerFeature.getFeature().toString();
+            try {
+                JsonNode featureNode = objectMapper.readTree(feature);
+                features.add(featureNode);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        featureCollection.set("features", features);
+        return featureCollection;
     }
 
     /**
@@ -106,8 +127,8 @@ public class SewerFeatureService {
     }
 
     /**
-     * Recursively reprojects coordinates array. If the node is a single position [x, y] or [x, y, z],
-     * it transforms X/Y; otherwise, it maps over nested arrays.
+     * Recursively reprojects coordinates array. If the node is a single position [x, y],
+     * it transforms X/Y; otherwise, it maps over nested arrays until the array is so small it can transform.
      */
     private ArrayNode reprojectCoordinatesRecursive(ArrayNode node) {
 
