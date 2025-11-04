@@ -24,18 +24,24 @@ public class DmiPoint {
 
     @ElementCollection
     //saves x-values as List<Double>
+    //x-values are longitude coordinates
     private List<Double> xValues;
 
     @ElementCollection
     //saves x-bounds as List<Double>
+    //x-bounds defines an area between two longitude coordinates
+    //if it there is just one point, the two bounds are equal
     private List<Double> xBounds;
 
     @ElementCollection
     //saves y-values as List<Double>
+    //y-values are longitude coordinates
     private List<Double> yValues;
 
     @ElementCollection
     //saves y-bounds as List<Double>
+    //y-bounds defines an area between two longitude coordinates
+    //if it there is just one point, the two bounds are equal
     private List<Double> yBounds;
 
     @ElementCollection
