@@ -30,7 +30,7 @@ public class SewerController {
 
     @PostMapping( "/api/sewageland/features")
     public void createSewagelandFeatureCollection() {
-        sewerFeatureService.createSewagelandFeatureCollection();
+        sewerFeatureService.createSewagelandFeatures();
     }
 
     @GetMapping("/api/sewageland/features")

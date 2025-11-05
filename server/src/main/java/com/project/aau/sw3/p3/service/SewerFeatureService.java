@@ -49,12 +49,12 @@ public class SewerFeatureService {
             + "&outputFormat=application/json"
             + "&bbox=566487.6742,6218236.0206,578426.1126,6228805.4170,EPSG:25832";
 
-    public void createSewagelandFeatureCollection() {
-        // For HTTP requests
-        // GET-request to DMI’s API, get answer as String)
+    public void createSewagelandFeatures() {
+
+        // GET-request to plandata’s API
         ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
 
-        // Save as JSON String
+        // Store the response's body from the API call as a String
         String json = response.getBody();
 
         JsonNode root = null;
