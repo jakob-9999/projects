@@ -1,28 +1,6 @@
-import { useEffect, useState } from "react";
-import { GeoJSON, useMap } from "react-leaflet";
-import { geoJSON } from "leaflet";
-import proj4 from "proj4";
-
-proj4.defs("EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs");
-
-// Function to convert GeoJSON coordinates from 25832 to WGS84
-const convertToWGS84 = (geojson) => ({
-    ...geojson,
-    features: geojson.features.map((f) => ({
-        ...f,
-        geometry: {
-            ...f.geometry,
-            coordinates: f.geometry.coordinates.map((polygon) =>
-                polygon.map((ring) =>
-                    ring.map(([x, y]) => {
-                        const [lon, lat] = proj4("EPSG:25832", "WGS84", [x, y]);
-                        return [lon, lat];
-                    })
-                )
-            ),
-        },
-    })),
-});
+import {useEffect, useState} from "react";
+import {GeoJSON, useMap} from "react-leaflet";
+import {geoJSON} from "leaflet";
 
 // Component to render the Sewageland layer.
 // It fetches the GeoJSON data from the server and renders it on the map.
@@ -31,15 +9,11 @@ export default function SewagelandLayer() {
     const map = useMap();
 
     useEffect(() => {
-        fetch("/api/sewageland", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-        })
+        fetch("/api/sewageland/features")
             .then((res) => res.json())
             .then((raw) => {
-                const converted = convertToWGS84(raw);
-                setData(converted);
-                const bounds = geoJSON(converted).getBounds();
+                setData(raw);
+                const bounds = geoJSON(raw).getBounds();
                 map.fitBounds(bounds);
             })
             .catch((err) => console.error("Error fetching geoJSON:", err));
@@ -58,13 +32,13 @@ export default function SewagelandLayer() {
         <GeoJSON
             data={data}
             style={(feature) => {
-                const type = feature.properties?.vaerd1201a;
+                const type = feature.properties.vaerd1201a;
                 const color = getColor(type);
                 return {
-                    color,
-                    fillColor: color,
-                    weight: 2,
+                    fillColor: color, // Color of the polygon
                     fillOpacity: 0.4,
+                    color: "#000", // Color of the border
+                    weight: 0.5, // Thickness of the border
                 };
             }}
             onEachFeature={(feature, layer) => {
