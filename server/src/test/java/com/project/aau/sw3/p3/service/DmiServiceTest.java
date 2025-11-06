@@ -3,6 +3,7 @@ package com.project.aau.sw3.p3.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.aau.sw3.p3.model.DmiPoint;
 import com.project.aau.sw3.p3.repository.DmiPointRepo;
+import com.project.aau.sw3.p3.repository.BBoxRepo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class DmiServiceTest {
         // Mock the classes used in the saveDmiDiniPoint method
         // We mock out these classes so the method we're calling thinks these classes are real and then continues to the next line
         DmiPointRepo dmiPointRepo = mock(DmiPointRepo.class);
+        BBoxRepo bBoxRepo = mock(BBoxRepo.class);
         RestTemplate restTemplate = mock(RestTemplate.class);
         ObjectMapper objectMapper = Mockito.spy(new ObjectMapper());
 
@@ -47,7 +49,7 @@ public class DmiServiceTest {
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(ResponseEntity.ok(json));
 
         // Create an instance of DmiService to gain access to the saveDmiDiniPoint method we're interested in testing
-        DmiService dmiService = new DmiService(dmiPointRepo, restTemplate, objectMapper);
+        DmiService dmiService = new DmiService(dmiPointRepo, bBoxRepo, restTemplate, objectMapper);
 
         dmiService.saveDmiDiniPoint();
 

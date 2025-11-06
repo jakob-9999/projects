@@ -48,5 +48,11 @@ public class DmiController {
     public void saveDmiDiniPoint() {
         dmiService.saveDmiDiniPoint();
     }
+
+    //adds single point fro bbox to DB
+    @PostMapping("/dmi-dini-bbox/bbox-point")
+    public void saveBBox() {
+        dmiService.saveBBox();
+    }
 }
 

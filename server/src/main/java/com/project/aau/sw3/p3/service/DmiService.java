@@ -3,6 +3,8 @@ package com.project.aau.sw3.p3.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.aau.sw3.p3.model.TotalPrecipitation;
 import com.project.aau.sw3.p3.model.DmiPoint;
+import com.project.aau.sw3.p3.model.BBoxPoint;
+import com.project.aau.sw3.p3.repository.BBoxRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +12,23 @@ import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.project.aau.sw3.p3.repository.DmiPointRepo;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 
 @Service
 public class DmiService {
 
     private final DmiPointRepo dmiPointRepo;
+    private final BBoxRepo bBoxRepo;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
     //constructor
-    public DmiService(DmiPointRepo dmiPointRepo, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public DmiService(DmiPointRepo dmiPointRepo, BBoxRepo bBoxRepo, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.dmiPointRepo = dmiPointRepo;
+        this.bBoxRepo = bBoxRepo;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
@@ -32,6 +39,14 @@ public class DmiService {
                     + "?coords=POINT(10.2039 56.1629)"
                     + "&parameter-name=total-precipitation"
                     + "&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
+
+    private static final String DMI_URL2 =
+            "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf" +
+                    "/bbox?bbox=10.154828,56.123953,10.261859,56.179219&" +
+                    "parameter-name=total-precipitation,latitude,longitude&" +
+                    "crs=crs84&f=GeoJSON&datetime=2025-11-07T22:00:00.000Z&" +
+                    "api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
+    //datetime=2025-11-07T22:00:00.000Z skal slettes/ændres
 
     public Map <String, Object> fetchDmiData() {
         try {
@@ -174,6 +189,65 @@ public class DmiService {
 
             //save in db
             dmiPointRepo.save(dmiPoint);
+
+        } catch (Exception e) {
+            //error message in console. tells where in the code it went wrong
+            e.printStackTrace();
+        }
+    }
+
+    public void saveBBox() {
+        try {
+            // GET-request bbox api, get answer as String
+            ResponseEntity<String> response = restTemplate.getForEntity(DMI_URL2, String.class);
+
+            // Save as JSON String
+            String json = response.getBody();
+
+            //Create ObjectMapper to convert JSON strings into Java objects
+            //converts the whole JSON to a Map
+            Map<String, Object> root = objectMapper.readValue(json, Map.class);
+
+            //"features" is a list of feature-objects
+            List<Map<String, Object>> features = (List<Map<String, Object>>) root.get("features");
+
+            //get the first feature object
+            Map<String, Object> firstFeatureObject = features.get(0);
+
+            //get "geometry" part from the "features"-object
+            Map<String, Object> geometry = (Map<String, Object>) firstFeatureObject.get("geometry");
+
+            //get "coordinates" from the "geometry"-object
+            List<Object> coordinates = (List<Object>) geometry.get("coordinates");
+
+            //convert coordinate-objects to doubles
+            double xCoordinate = ((Number) coordinates.get(0)).doubleValue();
+            double yCoordinate = ((Number) coordinates.get(1)).doubleValue();
+
+            //get "properties" from "features" part
+            Map<String, Object> properties = (Map<String, Object>) firstFeatureObject.get("properties");
+
+            //get "total-precipitation" from the "properties"-object
+            Object totalPrecipitation = properties.get("total-precipitation");
+
+            //convert totalPrecipitation-object to double
+            double precipitation = ((Number) totalPrecipitation).doubleValue();
+
+
+            //get "step" from "properties"
+            Object step = properties.get("step");
+
+            //convert step-object to a String
+            String stepString = step.toString();
+
+            //convert step-string to date and time
+            LocalDateTime timeStep = ZonedDateTime.parse(stepString).toLocalDateTime();
+
+            //create BBox object
+            BBoxPoint bBoxPoint = new BBoxPoint(xCoordinate, yCoordinate, precipitation, timeStep);
+
+            //save in db
+            bBoxRepo.save(bBoxPoint);
 
         } catch (Exception e) {
             //error message in console. tells where in the code it went wrong
