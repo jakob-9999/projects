@@ -3,8 +3,8 @@ package com.project.aau.sw3.p3.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.aau.sw3.p3.model.TotalPrecipitation;
 import com.project.aau.sw3.p3.model.DmiPoint;
-import com.project.aau.sw3.p3.model.BBoxPoint;
-import com.project.aau.sw3.p3.repository.BBoxRepo;
+import com.project.aau.sw3.p3.model.GridCell;
+import com.project.aau.sw3.p3.repository.GridRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +21,14 @@ import java.time.LocalDateTime;
 public class DmiService {
 
     private final DmiPointRepo dmiPointRepo;
-    private final BBoxRepo bBoxRepo;
+    private final GridRepo gridRepo;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
     //constructor
-    public DmiService(DmiPointRepo dmiPointRepo, BBoxRepo bBoxRepo, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public DmiService(DmiPointRepo dmiPointRepo, GridRepo gridRepo, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.dmiPointRepo = dmiPointRepo;
-        this.bBoxRepo = bBoxRepo;
+        this.gridRepo = gridRepo;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
@@ -40,13 +40,12 @@ public class DmiService {
                     + "&parameter-name=total-precipitation"
                     + "&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
+    // endpoint for the bbox
     private static final String DMI_URL2 =
-            "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf" +
-                    "/bbox?bbox=10.154828,56.123953,10.261859,56.179219&" +
-                    "parameter-name=total-precipitation,latitude,longitude&" +
-                    "crs=crs84&f=GeoJSON&datetime=2025-11-07T22:00:00.000Z&" +
-                    "api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
-    //datetime=2025-11-07T22:00:00.000Z skal slettes/ændres
+            "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf"
+                    + "/bbox?bbox=10.154828,56.123953,10.261859,56.179219"
+                    + "&parameter-name=total-precipitation,latitude,longitude"
+                    + "&crs=crs84&f=GeoJSON&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
     public Map <String, Object> fetchDmiData() {
         try {
@@ -211,44 +210,44 @@ public class DmiService {
             //"features" is a list of feature-objects
             List<Map<String, Object>> features = (List<Map<String, Object>>) root.get("features");
 
-            //get the first feature object
-            Map<String, Object> firstFeatureObject = features.get(0);
+            //loop through features and save each grid cell
+            for (int i = 0; i < features.size(); i++) {
+                Map<String, Object> featureObject = features.get(i);
 
-            //get "geometry" part from the "features"-object
-            Map<String, Object> geometry = (Map<String, Object>) firstFeatureObject.get("geometry");
+                //get "geometry" part from the "features"-object
+                Map<String, Object> geometry = (Map<String, Object>) featureObject.get("geometry");
 
-            //get "coordinates" from the "geometry"-object
-            List<Object> coordinates = (List<Object>) geometry.get("coordinates");
+                //get "coordinates" from the "geometry"-object
+                List<Object> coordinates = (List<Object>) geometry.get("coordinates");
 
-            //convert coordinate-objects to doubles
-            double xCoordinate = ((Number) coordinates.get(0)).doubleValue();
-            double yCoordinate = ((Number) coordinates.get(1)).doubleValue();
+                //convert coordinate-objects to doubles
+                double xCoordinate = ((Number) coordinates.get(0)).doubleValue();
+                double yCoordinate = ((Number) coordinates.get(1)).doubleValue();
 
-            //get "properties" from "features" part
-            Map<String, Object> properties = (Map<String, Object>) firstFeatureObject.get("properties");
+                //get "properties" from "features" part
+                Map<String, Object> properties = (Map<String, Object>) featureObject.get("properties");
 
-            //get "total-precipitation" from the "properties"-object
-            Object totalPrecipitation = properties.get("total-precipitation");
+                //get "total-precipitation" from the "properties"-object
+                Object totalPrecipitation = properties.get("total-precipitation");
 
-            //convert totalPrecipitation-object to double
-            double precipitation = ((Number) totalPrecipitation).doubleValue();
+                //convert totalPrecipitation-object to double
+                double precipitation = ((Number) totalPrecipitation).doubleValue();
 
+                //get "step" from "properties"
+                Object step = properties.get("step");
 
-            //get "step" from "properties"
-            Object step = properties.get("step");
+                //convert step-object to a String
+                String stepString = step.toString();
 
-            //convert step-object to a String
-            String stepString = step.toString();
+                //convert step-string to date and time
+                LocalDateTime timeStep = ZonedDateTime.parse(stepString).toLocalDateTime();
 
-            //convert step-string to date and time
-            LocalDateTime timeStep = ZonedDateTime.parse(stepString).toLocalDateTime();
+                //create GridCell object
+                GridCell gridCell = new GridCell(xCoordinate, yCoordinate, precipitation, timeStep);
 
-            //create BBox object
-            BBoxPoint bBoxPoint = new BBoxPoint(xCoordinate, yCoordinate, precipitation, timeStep);
-
-            //save in db
-            bBoxRepo.save(bBoxPoint);
-
+                //save in db
+                gridRepo.save(gridCell);
+            }
         } catch (Exception e) {
             //error message in console. tells where in the code it went wrong
             e.printStackTrace();

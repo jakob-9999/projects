@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "bBoxPoint")
-public class BBoxPoint {
+@Table(name = "BBox")
+public class GridCell {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //primary key
@@ -22,10 +22,10 @@ public class BBoxPoint {
     private Double precipitation;
     private LocalDateTime timeStep;
 
-    public BBoxPoint() {
+    public GridCell() {
     }
 
-    public BBoxPoint(Double xCoordinate, Double yCoordinate, Double precipitation, LocalDateTime timeStep) {
+    public GridCell(Double xCoordinate, Double yCoordinate, Double precipitation, LocalDateTime timeStep) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.precipitation = precipitation;
