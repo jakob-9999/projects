@@ -1,3 +1,6 @@
+### sewageland data
+POST localhost:8080/api/sewageland
+
 ### persists a Point of the DINI model from DMI Open Data
 POST localhost:8080/api/dmi-dini/point
 
@@ -9,3 +12,9 @@ POST localhost:8080/api/sewageland/features
 
 ### returns a FeatureCollection including all the features created in the POST /api/sewageland/features
 localhost:8080/api/sewageland/features
+
+### persists a grid cell of the bbox from DMI Open Data
+POST localhost:8080/api/dmi-dini-bbox/bbox-point
+
+### returns a grid cell from our DB
+localhost:8080/api/dmi-dini-bbox/bbox-point
