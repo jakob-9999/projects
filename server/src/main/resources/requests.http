@@ -18,3 +18,6 @@ POST localhost:8080/api/dmi-dini-bbox/bbox-point
 
 ### returns a grid cell from our DB
 localhost:8080/api/dmi-dini-bbox/bbox-point
+
+###
+localhost:8080/api/dmi-dini-bbox/get-grid
