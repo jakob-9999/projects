@@ -48,5 +48,11 @@ public class DmiController {
     public void saveDmiDiniPoint() {
         dmiService.saveDmiDiniPoint();
     }
+
+    // persists every grid cell from the bbox in our DB
+    @PostMapping("/dmi-dini-bbox/bbox-point")
+    public void saveBBox() {
+        dmiService.saveBBox();
+    }
 }
 

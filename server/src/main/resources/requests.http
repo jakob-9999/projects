@@ -4,6 +4,12 @@ POST localhost:8080/api/dmi-dini/point
 ### returns a DmiPoint from our DB
 localhost:8080/api/dmi-dini/point
 
+### persists a grid cell of the bbox from DMI Open Data
+POST localhost:8080/api/dmi-dini-bbox/bbox-point
+
+### returns a grid cell from our DB
+localhost:8080/api/dmi-dini-bbox/bbox-point
+
 ### creates sewageland GeoJson features in the DB (currently the bbox is set to aarhus, so features in Aarhus municipality is created)
 POST localhost:8080/api/sewageland/features
 
