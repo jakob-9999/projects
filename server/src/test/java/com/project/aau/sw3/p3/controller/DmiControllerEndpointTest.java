@@ -38,10 +38,11 @@ public class DmiControllerEndpointTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
+        // testing if the saveDmiDiniPoint() method was invoked in the endpoint method
         verify(dmiService).saveDmiDiniPoint();
     }
 
-        // Testing if the endpoint is reachable and verifies that the saveDmiDiniPoint() method is invoked in the endpoint
+    // Testing if the endpoint is reachable and verifies that the findById() method is invoked in the endpoint
     @Test
     public void getDmiDiniPointEndpointCallsRepo() throws Exception {
 
@@ -49,6 +50,7 @@ public class DmiControllerEndpointTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
+        // testing if the findById() method was invoked with any id in the endpoint method
         verify(dmiPointRepo).findById(any());
     }
 
