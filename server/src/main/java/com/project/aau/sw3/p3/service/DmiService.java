@@ -15,6 +15,12 @@ import com.project.aau.sw3.p3.repository.DmiPointRepo;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 
 @Service
@@ -252,5 +258,52 @@ public class DmiService {
             //error message in console. tells where in the code it went wrong
             e.printStackTrace();
         }
+    }
+
+    public ObjectNode buildDmiGrid() {
+        ObjectNode featureCollection = objectMapper.createObjectNode();
+
+        //create empty featureCollection to adhere to GeoJSON format (needed in frontend)
+        featureCollection.put("type", "FeatureCollection");
+
+        //create JSON-array to adhere to GeoJSON format
+        ArrayNode features = objectMapper.createArrayNode();
+
+        //add "type" and "geometry" to adhere to GeoJSON format
+        gridRepo.findAll().forEach(gridCell -> {
+
+            //"type"
+            ObjectNode feature = objectMapper.createObjectNode();
+            feature.put("type", "Feature");
+
+            //"geometry" includes a new "type"-element and a "coordinates"-element
+            ObjectNode geometry = objectMapper.createObjectNode();
+            geometry.put("type", "Point");
+            ArrayNode coordinates = objectMapper.createArrayNode();
+            coordinates.add(gridCell.getxCoordinate());
+            coordinates.add(gridCell.getyCoordinate());
+            geometry.set("coordinates", coordinates);
+
+            ObjectNode properties = objectMapper.createObjectNode();
+            Double precipitation = gridCell.getPrecipitation();
+            properties.put("total-precipitation", precipitation);
+            LocalDateTime timeStep = gridCell.getTimeStep();
+            properties.put("step", timeStep.toString());
+
+            feature.set("geometry", geometry);
+            feature.set("properties", properties);
+
+            features.add(feature);
+
+            /*try {
+                JsonNode featureNode = objectMapper.readTree(feature);
+                features.add(featureNode);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }*/
+        });
+
+        featureCollection.set("features", features);
+        return featureCollection;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.Map;
 
@@ -53,6 +54,11 @@ public class DmiController {
     @PostMapping("/dmi-dini-bbox/bbox-point")
     public void saveBBox() {
         dmiService.saveBBox();
+    }
+
+    @GetMapping("/dmi-dini-bbox/get-grid")
+    public ObjectNode getGridCellFeatureCollection() {
+        return dmiService.buildDmiGrid();
     }
 }
 
