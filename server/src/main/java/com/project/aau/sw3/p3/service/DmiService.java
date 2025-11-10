@@ -49,7 +49,7 @@ public class DmiService {
     // endpoint for the bbox
     private static final String DMI_URL2 =
             "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf"
-                    + "/bbox?bbox=10.154828,56.123953,10.261859,56.179219"
+                    + "/bbox?bbox=10.0689697,56.1045981,10.2639771,56.197728"
                     + "&parameter-name=total-precipitation,latitude,longitude"
                     + "&crs=crs84&f=GeoJSON&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
