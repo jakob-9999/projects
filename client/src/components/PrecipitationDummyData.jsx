@@ -20,8 +20,8 @@ export default function PrecipitationLayer() {
                     const firstStep = data.features[0].properties.step;
 
                     // filter only features with first step
-                    const firstSTepFeatures = data.features.filter(f => f.properties.step === firstStep);
-                    setPrecipitationData(firstSTepFeatures);
+                    const firstStepFeatures = data.features.filter(f => f.properties.step === firstStep);
+                    setPrecipitationData(firstStepFeatures);
                 } else {
                     setPrecipitationData([]);
                 }
