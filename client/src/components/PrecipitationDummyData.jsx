@@ -14,7 +14,17 @@ export default function PrecipitationLayer() {
             })
             .then(data => {
                 console.log(data)
-                setPrecipitationData(data.features || []);
+
+                if (data.features.length > 0) {
+                    // found the first time step
+                    const firstStep = data.features[0].properties.step;
+
+                    // filter only features with first step
+                    const firstSTepFeatures = data.features.filter(f => f.properties.step === firstStep);
+                    setPrecipitationData(firstSTepFeatures);
+                } else {
+                    setPrecipitationData([]);
+                }
             })
             .catch((err) => console.error("Error fetching geoJSON:", err));
     }, []);
@@ -51,6 +61,7 @@ export default function PrecipitationLayer() {
                 // ?? 0 is a safeguard in case the property is missing
                 const value = feature.properties["total-precipitation"] ?? 0;
                 const color = getColor(value);
+
 
                 return (
                     <Rectangle
