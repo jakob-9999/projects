@@ -48,6 +48,7 @@ export default function PrecipitationLayer() {
                 ];
 
                 // Extract precipitation value
+                // ?? 0 is a safeguard in case the property is missing
                 const value = feature.properties["total-precipitation"] ?? 0;
                 const color = getColor(value);
 
