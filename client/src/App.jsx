@@ -3,6 +3,7 @@ import "./App.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 import SewagelandLayer from "./components/Sewageland";
 import PrecipitationLayer from "./components/PrecipitationDummyData";
+import SliderComponent from "./components/SliderComponent.jsx";
 
 // This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
@@ -21,6 +22,8 @@ export default function MapRoot() {
                 center={[56.1629, 10.2039]}
                 zoom={11}
                 style={{
+                    //zIndex determines which layer is on top (1 is beneath 2)
+                    zIndex: 1,
                     height: "90vh",
                     width: "90vw",
                     borderRadius: "12px",
@@ -36,6 +39,9 @@ export default function MapRoot() {
                 <SewagelandLayer />
                 <PrecipitationLayer />
             </MapContainer>
+            <div style={{ position: "absolute", zIndex: 2, bottom: 20, left: 100, width: "1000px" }}>
+                <SliderComponent />
+            </div>
         </div>
     );
 }

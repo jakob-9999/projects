@@ -33,6 +33,7 @@ export default function PrecipitationLayer() {
         if (precipitation > 10) return "blue";
         if (precipitation > 5) return "dodgerblue";
         if (precipitation > 0.5) return "lightblue";
+        if (precipitation === 0.0) return "dodgerblue"; //fjernes igen
         return "transparent";
     };
 
