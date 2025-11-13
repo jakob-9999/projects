@@ -15,16 +15,29 @@ export default function PrecipitationLayer() {
             .then(data => {
                 console.log(data)
 
-                if (data.features.length > 0) {
-                    // found the first time step
-                    const firstStep = data.features[0].properties.step;
+                //group features with same "step" together
+                //use reduce to accumulate/gather all features one by one in an object
+                //acc is an accumulator-object we're building where key=step and value=an array of features
+                const timeStepGroup = data.features.reduce((acc, feature) => {
+                    const step = feature.properties.step; //date and time
+                    //if accumulated group of features does not exist for the given step, create empty list
+                    if (!acc[step]) {
+                        acc[step] = [];
+                    }
+                    //push the feature to the acc object.
+                    //features with the same step-property get pushed to the same place in the acc object
+                    acc[step].push(feature);
+                    //acc has the following structure (key: value):
+                    // "2025-11-13T03:00:00.000Z": [feature1, feature2], push feature to step
+                    return acc;
+                }, {});
 
-                    // filter only features with first step
-                    const firstStepFeatures = data.features.filter(f => f.properties.step === firstStep);
-                    setPrecipitationData(firstStepFeatures);
-                } else {
-                    setPrecipitationData([]);
-                }
+                //get first time step
+                const firstStep = Object.keys(timeStepGroup)[4];
+                const firstStepFeatures = timeStepGroup[firstStep];
+                console.log(firstStepFeatures)
+                setPrecipitationData(firstStepFeatures);
+
             })
             .catch((err) => console.error("Error fetching geoJSON:", err));
     }, []);
@@ -33,7 +46,7 @@ export default function PrecipitationLayer() {
         if (precipitation > 10) return "blue";
         if (precipitation > 5) return "dodgerblue";
         if (precipitation > 0.5) return "lightblue";
-        if (precipitation === 0.0) return "dodgerblue"; //fjernes igen
+        if (precipitation <= 0.5) return "dodgerblue"; //fjernes igen
         return "transparent";
     };
 

@@ -1,3 +1,4 @@
+/*
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import {useEffect} from "react";
@@ -75,4 +76,4 @@ export default function SliderComponent() {
             />
         </Box>
     );
-}
+}*/
