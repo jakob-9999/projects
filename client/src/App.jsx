@@ -39,9 +39,6 @@ export default function MapRoot() {
                 <SewagelandLayer />
                 <PrecipitationLayer />
             </MapContainer>
-            {/*<div style={{ position: "absolute", zIndex: 2, bottom: 20, left: 100, width: "1000px" }}>
-                <SliderComponent />
-            </div>*/}
         </div>
     );
 }
