@@ -33,7 +33,7 @@ export default function MapRoot() {
                     attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 />
 
-                {/*Ensures the MapContainer prop dragging is set dynamically whenever the state of isDraggingEnabled changes*/}
+                {/*Ensures the MapContainer attribute dragging is set dynamically whenever the state of isDraggingEnabled changes*/}
                 <MapDraggingController isDraggingEnabled={isDraggingEnabled}/>
                 {/* Layer components */}
                 <SewagelandLayer />
