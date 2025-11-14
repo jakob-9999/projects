@@ -65,7 +65,7 @@ export default function PrecipitationLayer({ onSliderMouseDown, onSliderMouseUp}
 
     return (
         // If the slider is being used, disable dragging on the map
-        <div onMouseDown={onSliderMouseDown} onMouseUp={onSliderMouseUp} style={{ zIndex: '10' }}>
+        <div onMouseDown={onSliderMouseDown} onMouseUp={onSliderMouseUp}>
             {/*Passes the props sliderValue and setSliderValue to SliderComponent*/}
             <SliderComponent sliderValue={sliderValue} setSliderValue={setSliderValue} />
 
