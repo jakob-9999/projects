@@ -1,24 +1,22 @@
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 import { MapContainer, TileLayer } from "react-leaflet";
+import { useState } from "react";
+
 import SewagelandLayer from "./components/Sewageland";
-import PrecipitationLayer from "./components/PrecipitationDummyData";
-//import SliderComponent from "./components/SliderComponent.jsx";
+import PrecipitationLayer from "./components/ForecastGridCellsComponent.jsx";
+import MapDraggingController from "./components/MapDraggingController";
 
 // This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
+
+    // This is needed so we know if the map should be draggable or not, when using the slider it should not be
+    const [isDraggingEnabled, setIsDraggingEnabled] = useState(true);
+
     return (
-        <div
-            style={{
-                height: "100vh",
-                width: "100vw",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "#1e1e1e",
-            }}
-        >
+        <div>
             <MapContainer
+                dragging={isDraggingEnabled}
                 center={[56.1629, 10.2039]}
                 zoom={11}
                 style={{
@@ -35,9 +33,15 @@ export default function MapRoot() {
                     attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 />
 
+                {/*Ensures the MapContainer attribute dragging is set dynamically whenever the state of isDraggingEnabled changes*/}
+                <MapDraggingController isDraggingEnabled={isDraggingEnabled}/>
                 {/* Layer components */}
                 <SewagelandLayer />
-                <PrecipitationLayer />
+
+                {/*Passing props to ensure the map is not dragging when the slider is moved*/}
+                <PrecipitationLayer
+                    onSliderMouseDown={() => setIsDraggingEnabled(false)}
+                    onSliderMouseUp={() => setIsDraggingEnabled(true)}/>
             </MapContainer>
         </div>
     );

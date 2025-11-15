@@ -1,12 +1,10 @@
 import { Rectangle, Popup } from "react-leaflet";
 import {useEffect} from "react";
 import {useState} from "react";
-import {geoJSON} from "leaflet";
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
+import SliderComponent from "./SliderComponent";
 
 // fetch grid cells
-export default function PrecipitationLayer() {
+export default function PrecipitationLayer({ onSliderMouseDown, onSliderMouseUp}) {
     const [timeStepGroup, setTimeStepGroup] = useState({})
     const [sliderValue, setSliderValue] = useState(0)
 
@@ -66,30 +64,10 @@ export default function PrecipitationLayer() {
     const cellSizeKm = 2; // each grid is 2*2 km
 
     return (
-        <>
-            {/* sx is style extension. Lets us create a styling object. Needed to put slider on top of map with zIndex */}
-            <Box
-                sx={{
-                    position: "absolute",
-                    bottom: 20,
-                    left: 20,
-                    zIndex: 1000,
-                    width: 1000, // just example width
-                }}
-            >
-                {/* slider taken from https://mui.com/material-ui/react-slider/ */}
-                <Slider
-                    value={sliderValue}
-                    aria-label="Time"
-                    defaultValue={0}
-                    onChange={(e, val) => setSliderValue(val)}
-                    valueLabelDisplay="auto"
-                    step={1}
-                    marks
-                    min={0}
-                    max={60}
-                />
-            </Box>
+        // If the slider is being used, disable dragging on the map
+        <div onMouseDown={onSliderMouseDown} onMouseUp={onSliderMouseUp}>
+            {/*Passes the props sliderValue and setSliderValue to SliderComponent*/}
+            <SliderComponent sliderValue={sliderValue} setSliderValue={setSliderValue} />
 
             {currentStepFeatures.map((feature, i) => {
                 // Extract coordinates (GeoJSON is [lon, lat])
@@ -126,6 +104,6 @@ export default function PrecipitationLayer() {
                     </Rectangle>
                 );
             })}
-        </>
+        </div>
     );
 }
