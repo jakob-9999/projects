@@ -6,12 +6,17 @@ import { useState } from "react";
 import SewagelandLayer from "./components/Sewageland";
 import PrecipitationLayer from "./components/ForecastGridCellsComponent.jsx";
 import MapDraggingController from "./components/MapDraggingController";
+import VerticalToggleButtons from "./components/ToggleButton";
 
 // This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
 
     // This is needed so we know if the map should be draggable or not, when using the slider it should not be
     const [isDraggingEnabled, setIsDraggingEnabled] = useState(true);
+
+    // This is needed so we can toggle the visibility of the layers
+    const [showSewage, setShowSewage] = useState(true);
+    const [showPrecipitation, setShowPrecipitation] = useState(true);
 
     return (
         <div>
@@ -35,13 +40,28 @@ export default function MapRoot() {
 
                 {/*Ensures the MapContainer attribute dragging is set dynamically whenever the state of isDraggingEnabled changes*/}
                 <MapDraggingController isDraggingEnabled={isDraggingEnabled}/>
+
                 {/* Layer components */}
-                <SewagelandLayer />
+
+                {/*Show/hide Sewageland*/}
+                {showSewage && <SewagelandLayer />}
 
                 {/*Passing props to ensure the map is not dragging when the slider is moved*/}
-                <PrecipitationLayer
-                    onSliderMouseDown={() => setIsDraggingEnabled(false)}
-                    onSliderMouseUp={() => setIsDraggingEnabled(true)}/>
+                {/*Show/hide Precipitation*/}
+                {showPrecipitation && (
+                    <PrecipitationLayer
+                        onSliderMouseDown={() => setIsDraggingEnabled(false)}
+                        onSliderMouseUp={() => setIsDraggingEnabled(true)}
+                    />
+                )}
+
+                {/*Passing control to toggle buttons*/}
+                <VerticalToggleButtons
+                    showSewage={showSewage}
+                    setShowSewage={setShowSewage}
+                    showPrecipitation={showPrecipitation}
+                    setShowPrecipitation={setShowPrecipitation}
+                />
             </MapContainer>
         </div>
     );
