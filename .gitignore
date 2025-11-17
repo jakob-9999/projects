@@ -33,3 +33,6 @@ build/
 .vscode/
 
 client/package-lock.json
+
+### the yaml file ###
+application-local.yaml

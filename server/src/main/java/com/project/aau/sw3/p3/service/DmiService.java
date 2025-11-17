@@ -5,9 +5,13 @@ import com.project.aau.sw3.p3.model.TotalPrecipitation;
 import com.project.aau.sw3.p3.model.DmiPoint;
 import com.project.aau.sw3.p3.model.GridCell;
 import com.project.aau.sw3.p3.repository.GridRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -52,6 +56,10 @@ public class DmiService {
                     + "/bbox?bbox=10.0689697,56.1045981,10.2639771,56.197728"
                     + "&parameter-name=total-precipitation,latitude,longitude"
                     + "&crs=crs84&f=GeoJSON&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
+
+    //getting the gdal path from the application-local.yaml file
+    @Value("${gdal.path}")
+    private String gdalPath;
 
     public Map <String, Object> fetchDmiData() {
         try {
@@ -305,5 +313,49 @@ public class DmiService {
 
         featureCollection.set("features", features);
         return featureCollection;
+    }
+
+    public void projectGrids(){
+        ObjectNode dmiGrid = buildDmiGrid();
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            //create a file object
+            File file = new File("jsonValues.json");
+
+            //write json to a file, "file" is the file to save it in, "dmiGrid" is the json to save
+            mapper.writeValue(file, dmiGrid);
+
+            System.out.println("File saved to: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            //when using writeValue, we have to catch for IOException
+            throw new RuntimeException(e);
+        }
+
+        //running a terminal command in jave
+
+
+        //the command
+        String command = gdalPath
+                        + "-a nearest:radius1=0.05:radius2=0.05:nodata=-9999 "
+                        + "-txe 10.075 10.263 "
+                        + "-tye 56.105 56.197 "
+                        + "-tr 0.001 0.001 "
+                        + "-of GTiff -ot Float32 "
+                        + "-co COMPRESS=LZW "
+                        + "-a_srs EPSG:4326 "
+                        + "-l test "
+                        + "-zfield total-precipitation "
+                        + "jsonValues.json test_wgs84_nearest.tif"; //the first is the json-input file, the second is the tif-output file
+
+        try{
+            Process proc = Runtime.getRuntime().exec(command);
+
+            //cause the thread to wait, if necessary, until the process has terminated
+            proc.waitFor();
+
+        } catch(IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

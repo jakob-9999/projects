@@ -58,6 +58,7 @@ public class DmiController {
 
     @GetMapping("/dmi-dini-bbox/get-grid")
     public ObjectNode getGridCellFeatureCollection() {
+        dmiService.projectGrids();
         return dmiService.buildDmiGrid();
     }
 }
