@@ -28,9 +28,10 @@ export default function VerticalToggleButtons({
             ref={boxRef}
             sx={{
                 position: "absolute",
-                bottom: 250,
-                left: 20,
+                bottom: 450,
+                left: 10,
                 zIndex: 1000,
+                backgroundColor: "#fff",
             }}
         >
 
