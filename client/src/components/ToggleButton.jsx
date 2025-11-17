@@ -1,5 +1,5 @@
 import * as React from 'react';
-import OpacityIcon from '@mui/icons-material/Opacity';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -48,7 +48,7 @@ export default function VerticalToggleButtons({
                     selected={showPrecipitation}
                     onClick={() => setShowPrecipitation(prev => !prev)}
                 >
-                    <OpacityIcon />
+                    <WaterDropIcon />
                 </ToggleButton>
 
             </ToggleButtonGroup>
