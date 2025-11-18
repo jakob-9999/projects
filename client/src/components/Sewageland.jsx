@@ -1,39 +1,25 @@
-import {useEffect, useState} from "react";
-import {GeoJSON, useMap} from "react-leaflet";
-import {geoJSON} from "leaflet";
+import {GeoJSON, useMap } from "react-leaflet";
+import { useSewagelandData} from "../hooks/useSewagelandData.js";
+import { geoJSON } from "leaflet";
+import { getSewagelandColor } from "../utils/getSewagelandColor.js";
 
 // Component to render the Sewageland layer.
 // It fetches the GeoJSON data from the server and renders it on the map.
 export default function SewagelandLayer() {
-    const [data, setData] = useState(null);
     const map = useMap();
-
-    useEffect(() => {
-        fetch("/api/sewageland/features")
-            .then((res) => res.json())
-            .then((raw) => {
-                setData(raw);
-                const bounds = geoJSON(raw).getBounds();
-                map.fitBounds(bounds);
-            })
-            .catch((err) => console.error("Error fetching geoJSON:", err));
-    }, [map]);
-
-    const getColor = (type) => {
-        if (type?.includes("Spildevandskloakeret")) return "red";
-        if (type?.includes("samme")) return "yellow";
-        if (type?.includes("Separatkloakeret")) return "green";
-        return "#888";
-    };
+    const data = useSewagelandData();
 
     if (!data) return null;
+
+    const bounds = geoJSON(data).getBounds();
+    map.fitBounds(bounds);
 
     return (
         <GeoJSON
             data={data}
             style={(feature) => {
                 const type = feature.properties.vaerd1201a;
-                const color = getColor(type);
+                const color = getSewagelandColor(type);
                 return {
                     fillColor: color, // Color of the polygon
                     fillOpacity: 0.4,

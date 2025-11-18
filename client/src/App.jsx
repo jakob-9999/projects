@@ -4,7 +4,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { useState } from "react";
 
 import SewagelandLayer from "./components/Sewageland";
-import PrecipitationLayer from "./components/ForecastGridCellsComponent.jsx";
+import PrecipitationLayer from "./components/PrecipitationLayer.jsx";
 import MapDraggingController from "./components/MapDraggingController";
 import VerticalToggleButtons from "./components/ToggleButton";
 
