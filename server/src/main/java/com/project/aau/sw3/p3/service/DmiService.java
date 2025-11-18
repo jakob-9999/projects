@@ -6,12 +6,15 @@ import com.project.aau.sw3.p3.model.DmiPoint;
 import com.project.aau.sw3.p3.model.GridCell;
 import com.project.aau.sw3.p3.repository.GridRepo;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -77,7 +80,7 @@ public class DmiService {
             //System.out.println(json);
 
             //just an example: will look at the type
-            System.out.println("JSON type: " + data.get("type"));
+            //System.out.println("JSON type: " + data.get("type"));
 
             // return the map in browser
             return data;
@@ -113,12 +116,12 @@ public class DmiService {
             //convert to the model class "TotalPrecipitation"
             TotalPrecipitation tp = objectMapper.convertValue(totalPrecipObj, TotalPrecipitation.class);
 
-            System.out.println("Number of values: " + tp.getValues().size());
-            System.out.println("First value: " + tp.getValues().get(0));
+            //System.out.println("Number of values: " + tp.getValues().size());
+            //System.out.println("First value: " + tp.getValues().get(0));
 
 
             //just an example: will look at the type
-            System.out.println("JSON type: " + root.get("type"));
+            //System.out.println("JSON type: " + root.get("type"));
 
             // return the map in browser
             return tp;
@@ -326,33 +329,85 @@ public class DmiService {
             //write json to a file, "file" is the file to save it in, "dmiGrid" is the json to save
             mapper.writeValue(file, dmiGrid);
 
-            System.out.println("File saved to: " + file.getAbsolutePath());
+            //.out.println("File saved to: " + file.getAbsolutePath());
         } catch (IOException e) {
             //when using writeValue, we have to catch for IOException
             throw new RuntimeException(e);
         }
 
+        //finding all timesteps in DB
+        List<LocalDateTime> timeSteps = gridRepo.findAllTimeSteps();
+
+        //getting the first timestep
+        LocalDateTime step1 = timeSteps.get(0);
+
+        System.out.println("step1: " + step1);
+
+
+        File outputFile = new File("client/public/test_wgs84_nearest12.tif");
+        File parent = outputFile.getParentFile();
+        if (!parent.exists()) {
+            parent.mkdirs();  // opret mapper, hvis de ikke findes
+        }
+        if (!parent.canWrite()) {
+            try {
+                throw new IOException("Mappen kan ikke skrives til: " + parent.getAbsolutePath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        System.out.println(outputFile.getAbsolutePath());
+
         //running a terminal command in jave
 
 
         //the command
-        String command = gdalPath
+        String command = gdalPath +" "
+                        + "-sql \"SELECT * FROM jsonValues WHERE step = '" + step1 +"'\" "
                         + "-a nearest:radius1=0.05:radius2=0.05:nodata=-9999 "
-                        + "-txe 10.075 10.263 "
-                        + "-tye 56.105 56.197 "
+                        + "-txe 10.0689697 10.2639771 "
+                        + "-tye 56.1045981 56.197728 "
                         + "-tr 0.001 0.001 "
                         + "-of GTiff -ot Float32 "
                         + "-co COMPRESS=LZW "
                         + "-a_srs EPSG:4326 "
-                        + "-l test "
+                        + "-l jsonValues " //because the json file is called jsonValues.json
                         + "-zfield total-precipitation "
-                        + "jsonValues.json test_wgs84_nearest.tif"; //the first is the json-input file, the second is the tif-output file
+                        + "jsonValues.json \"" + outputFile.getAbsolutePath() + "\""; //the first is the json-input file, the second is the tif-output file
 
         try{
             Process proc = Runtime.getRuntime().exec(command);
 
+            // read "standard output"
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+            // read "standard error"
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+            // print output from GDAL
+            String s;
+            System.out.println("GDAL standard output:");
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("GDAL standard error:");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+
             //cause the thread to wait, if necessary, until the process has terminated
-            proc.waitFor();
+            int exit = proc.waitFor();
+
+            System.out.println("GDAL exit code: " + exit);
+
+            //if gdal fails, print message
+            if (exit != 0) {
+                System.err.println("GDAL failed!");
+            }
+
+            System.out.println("COMMAND: " + command);
 
         } catch(IOException | InterruptedException e) {
             throw new RuntimeException(e);
