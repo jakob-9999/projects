@@ -356,46 +356,33 @@ public class DmiService {
             System.out.println(outputFile.getAbsolutePath());
 
             //running a terminal command in jave
+            try {
+                //this terminal command takes a geoJSON-file (test.json) and creates a geoTiff (test_wgs84_nearest12.tif)
+                String[] args = new String[]{
+                        gdalPath,
+                        "-sql", "SELECT * FROM jsonValues WHERE step = '" + timeSteps.get(i) + "'",
+                        "-a", "nearest:radius1=0.05:radius2=0.05:nodata=-9999",
+                        "-txe", "10.0689697", "10.2639771",
+                        "-tye", "56.1045981", "56.197728",
+                        "-tr", "0.001", "0.001",
+                        "-of", "GTiff",
+                        "-ot", "Float32",
+                        "-co", "COMPRESS=LZW",
+                        "-a_srs", "EPSG:4326",
+                        "-l", "jsonValues",
+                        "-zfield", "total-precipitation",
+                        "jsonValues.json",
+                        outputFile.getAbsolutePath()
+                };
+
+                //ProcessBuilder makes it possible to start external programs from Java
+                //this includes commandline programs like GDAL
+                Process proc = new ProcessBuilder(args).start();
+
+                //wait for gdal to finish and print exit code
 
 
-            //the command
-            String command = gdalPath +" "
-                    + "-sql \"SELECT * FROM jsonValues WHERE step = '" + timeSteps.get(i) +"'\" "
-                    + "-a nearest:radius1=0.05:radius2=0.05:nodata=-9999 "
-                    + "-txe 10.0689697 10.2639771 "
-                    + "-tye 56.1045981 56.197728 "
-                    + "-tr 0.001 0.001 "
-                    + "-of GTiff -ot Float32 "
-                    + "-co COMPRESS=LZW "
-                    + "-a_srs EPSG:4326 "
-                    + "-l jsonValues " //because the json file is called jsonValues.json
-                    + "-zfield total-precipitation "
-                    + "jsonValues.json \"" + outputFile.getAbsolutePath() + "\""; //the first is the json-input file, the second is the tif-output file
-
-            try{
-                Process proc = Runtime.getRuntime().exec(command);
-
-                // read "standard output"
-                BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-
-                // read "standard error"
-                BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-
-                // print output from GDAL
-                String s;
-                System.out.println("GDAL standard output:");
-                while ((s = stdInput.readLine()) != null) {
-                    System.out.println(s);
-                }
-
-                System.out.println("GDAL standard error:");
-                while ((s = stdError.readLine()) != null) {
-                    System.out.println(s);
-                }
-
-                //cause the thread to wait, if necessary, until the process has terminated
                 int exit = proc.waitFor();
-
                 System.out.println("GDAL exit code: " + exit);
 
                 //if gdal fails, print message
@@ -403,12 +390,10 @@ public class DmiService {
                     System.err.println("GDAL failed!");
                 }
 
-                System.out.println("COMMAND: " + command);
-
-            } catch(IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (IOException | InterruptedException e) {
+                //prints detailed error message
+                e.printStackTrace();
             }
         }
-
     }
 }
