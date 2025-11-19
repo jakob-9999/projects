@@ -24,3 +24,6 @@ localhost:8080/api/dmi-dini-bbox/bbox-point
 
 ###
 localhost:8080/api/dmi-dini-bbox/get-grid
+
+###
+POST localhost:8080/api/create-tif-files

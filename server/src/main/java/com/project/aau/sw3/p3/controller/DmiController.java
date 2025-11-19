@@ -58,8 +58,12 @@ public class DmiController {
 
     @GetMapping("/dmi-dini-bbox/get-grid")
     public ObjectNode getGridCellFeatureCollection() {
-        dmiService.projectGrids();
         return dmiService.buildDmiGrid();
+    }
+
+    @PostMapping("/create-tif-files")
+    public void createTifFiles() {
+        dmiService.projectGrids();
     }
 }
 
