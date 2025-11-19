@@ -60,9 +60,9 @@ public class DmiService {
                     + "&parameter-name=total-precipitation,latitude,longitude"
                     + "&crs=crs84&f=GeoJSON&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
-    //getting the gdal path from the application-local.yaml file
+    /*//getting the gdal path from the application-local.yaml file
     @Value("${gdal.path}")
-    private String gdalPath;
+    private String gdalPath;*/
 
     public Map <String, Object> fetchDmiData() {
         try {
@@ -354,6 +354,18 @@ public class DmiService {
             }
 
             System.out.println(outputFile.getAbsolutePath());
+
+            String gdalPath;
+
+            //true if app is running on windows
+            boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+
+            //set path to gdal based on OS
+            if (isWindows) {
+                gdalPath = "C:\\OSGeo4W64\\bin\\gdal_grid.exe";
+            } else {
+                gdalPath = "/opt/homebrew/bin/gdal_grid";
+            }
 
             //running a terminal command in jave
 
