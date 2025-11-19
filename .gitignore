@@ -35,4 +35,4 @@ build/
 client/package-lock.json
 
 ### the yaml file ###
-application-local.yaml
+server/src/main/resources/application-local.yaml
