@@ -1,3 +1,0 @@
-gdal:
-    path: 'C:\Users\Signe\AppData\Local\Programs\OSGeo4W\bin\gdal_grid.exe' #using single quote so yaml read \ correct
-
