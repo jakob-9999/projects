@@ -1,8 +1,6 @@
 spring:
   application:
     name: aau-sw3-p3
-  profiles:
-    active: local
 
   datasource:
     url: jdbc:postgresql://localhost:5434/vudp
