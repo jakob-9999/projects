@@ -294,7 +294,7 @@ public class DmiService {
         return featureCollection;
     }
 
-    public void projectGrids(){
+    public void projectGrids() throws IOException {
         ObjectNode dmiGrid = buildDmiGrid();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -312,9 +312,23 @@ public class DmiService {
         //finding all timesteps in DB
         List<LocalDateTime> timeSteps = gridRepo.findAllTimeSteps();
 
+        String basePath = System.getProperty("user.dir");
+        System.out.println("base path: " + basePath);
+
+        File gridDir;
+        //if the application is started in the terminal using maven
+        if (basePath.endsWith("server")) {
+            //go one level up and normalize the path
+            gridDir = new File(basePath, "../client/public/grids/").getCanonicalFile();
+        } else {
+            //use the path relative to the project root
+            gridDir = new File(basePath, "client/public/grids/").getCanonicalFile();
+        }
+
         for (int i = 0; i < timeSteps.size(); i++) {
             String fileName = "grid" + i + ".tif";
-            File outputFile = new File("client/public/grids/" + fileName);
+            File outputFile = new File(gridDir, fileName);
+            System.out.println(outputFile);
             File parent = outputFile.getParentFile();
             if (!parent.exists()) {
                 parent.mkdirs();  // create directory if it doesn't exist

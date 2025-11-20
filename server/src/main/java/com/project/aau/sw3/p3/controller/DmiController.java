@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController // Tells Spring, this class hadnles http request
@@ -62,7 +63,7 @@ public class DmiController {
     }
 
     @PostMapping("/create-tif-files")
-    public void createTifFiles() {
+    public void createTifFiles() throws IOException {
         dmiService.projectGrids();
     }
 }
