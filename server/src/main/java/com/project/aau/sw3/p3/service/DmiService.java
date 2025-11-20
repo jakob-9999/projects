@@ -318,7 +318,9 @@ public class DmiService {
         File gridDir;
         //if the application is started in the terminal using maven
         if (basePath.endsWith("server")) {
-            //go one level up and normalize the path
+            //go one level up and normalize the path by using getCanonicalFile(), which means it removed any "." or ".." in the path
+            // this means it goes from "AAU-SW3-P3/server/../client/public/grids/" to "AAU-SW3-P3/client/public/grids/"
+            //getCanonicalFile, return  the full path to the given directory
             gridDir = new File(basePath, "../client/public/grids/").getCanonicalFile();
         } else {
             //use the path relative to the project root
