@@ -21,11 +21,14 @@ export default function PrecipitationLayer({ onSliderMouseDown, onSliderMouseUp}
     const cellSizeKm = 2; // each grid is 2*2 km
 
     return (
-        // If the slider is being used, disable dragging on the map
-        <div onMouseDown={onSliderMouseDown} onMouseUp={onSliderMouseUp}>
-            {/*Passes the props sliderValue and setSliderValue to SliderComponent*/}
-            <SliderComponent sliderValue={sliderValue} setSliderValue={setSliderValue} />
-
+        // pass slider events direct to the slider component
+        <div>
+            <SliderComponent
+                sliderValue={sliderValue}
+                setSliderValue={setSliderValue}
+                onSliderMouseDown={onSliderMouseDown}
+                onSliderMouseUp={onSliderMouseUp}
+            />
             {currentStepFeatures.map((feature, i) => {
                 // Extract coordinates (GeoJSON is [lon, lat])
                 const [lon, lat] = feature.geometry.coordinates;
