@@ -27,8 +27,8 @@ export default function MapRoot() {
                 style={{
                     //zIndex determines which layer is on top (1 is beneath 2)
                     zIndex: 1,
-                    height: "90vh",
-                    width: "90vw",
+                    height: "100vh",
+                    width: "100vw",
                     borderRadius: "12px",
                     boxShadow: "0 0 20px rgba(0,0,0,0.4)",
                 }}

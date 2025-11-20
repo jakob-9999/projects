@@ -1,7 +1,8 @@
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 
-export default function SliderComponent({ sliderValue, setSliderValue}) {
+export default function SliderComponent({
+sliderValue, setSliderValue, onSliderMouseUp,onSliderMouseDown}) {
 
     return (
         // sx is style extension. Lets us create a styling object. Needed to put slider on top of map with zIndex
@@ -20,6 +21,8 @@ export default function SliderComponent({ sliderValue, setSliderValue}) {
                 aria-label="Time"
                 defaultValue={0}
                 onChange={(e, val) => setSliderValue(val)}
+                onMouseDown={onSliderMouseDown}
+                onChangeCommitted={onSliderMouseUp}
                 valueLabelDisplay="on"
                 step={1}
                 marks
