@@ -36,3 +36,9 @@ client/package-lock.json
 
 ### the yaml file ###
 server/src/main/resources/application-local.yaml
+
+### the tif-files """
+client/public/grids
+
+### json precipitation values ###
+precipitationGridCells.json
