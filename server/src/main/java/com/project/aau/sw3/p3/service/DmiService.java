@@ -7,27 +7,20 @@ import com.project.aau.sw3.p3.model.DmiPoint;
 import com.project.aau.sw3.p3.model.GridCell;
 import com.project.aau.sw3.p3.repository.GridRepo;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.project.aau.sw3.p3.repository.DmiPointRepo;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Service
@@ -79,9 +72,6 @@ public class DmiService {
             System.out.println("DMI API Response:");
             //System.out.println(json);
 
-            //just an example: will look at the type
-            //System.out.println("JSON type: " + data.get("type"));
-
             // return the map in browser
             return data;
 
@@ -115,13 +105,6 @@ public class DmiService {
 
             //convert to the model class "TotalPrecipitation"
             TotalPrecipitation tp = objectMapper.convertValue(totalPrecipObj, TotalPrecipitation.class);
-
-            //System.out.println("Number of values: " + tp.getValues().size());
-            //System.out.println("First value: " + tp.getValues().get(0));
-
-
-            //just an example: will look at the type
-            //System.out.println("JSON type: " + root.get("type"));
 
             // return the map in browser
             return tp;
@@ -195,7 +178,7 @@ public class DmiService {
             //get the "t" part from the "axes"-part
             Map<String, Object> t = (Map<String, Object>) axes.get("t");
 
-            //get the "valurs" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
+            //get the "values" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
             List<String> tValues = objectMapper.convertValue(t.get("values"),
                     new TypeReference<List<String>>() {}
             );
@@ -305,13 +288,6 @@ public class DmiService {
             feature.set("properties", properties);
 
             features.add(feature);
-
-            /*try {
-                JsonNode featureNode = objectMapper.readTree(feature);
-                features.add(featureNode);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }*/
         });
 
         featureCollection.set("features", features);
@@ -322,14 +298,12 @@ public class DmiService {
         ObjectNode dmiGrid = buildDmiGrid();
         ObjectMapper mapper = new ObjectMapper();
 
+        //create a file object
+        File inputFile = new File("precipitationGridCells.json");
         try {
-            //create a file object
-            File file = new File("precipitationGridCells.json");
-
             //write json to a file, "file" is the file to save it in, "dmiGrid" is the json to save
-            mapper.writeValue(file, dmiGrid);
+            mapper.writeValue(inputFile, dmiGrid);
 
-            //.out.println("File saved to: " + file.getAbsolutePath());
         } catch (IOException e) {
             //when using writeValue, we have to catch for IOException
             throw new RuntimeException(e);
@@ -343,21 +317,18 @@ public class DmiService {
             File outputFile = new File("client/public/grids/" + fileName);
             File parent = outputFile.getParentFile();
             if (!parent.exists()) {
-                parent.mkdirs();  // opret mapper, hvis de ikke findes
+                parent.mkdirs();  // create directory if it doesn't exist
             }
             if (!parent.canWrite()) {
                 try {
-                    throw new IOException("Mappen kan ikke skrives til: " + parent.getAbsolutePath());
+                    throw new IOException("Directory can not be written to: " + parent.getAbsolutePath());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
 
-            System.out.println(outputFile.getAbsolutePath());
-
-            //running a terminal command in jave
             try {
-                //this terminal command takes a geoJSON-file (test.json) and creates a geoTiff (test_wgs84_nearest12.tif)
+                //this terminal command takes a geoJSON-file (inputFile = precipitationGridCells.json) and creates a geoTiff (outputFile)
                 String[] args = new String[]{
                         gdalPath,
                         "-sql", "SELECT * FROM precipitationGridCells WHERE step = '" + timeSteps.get(i) + "'",
@@ -371,7 +342,7 @@ public class DmiService {
                         "-a_srs", "EPSG:4326",
                         "-l", "precipitationGridCells",
                         "-zfield", "total-precipitation",
-                        "precipitationGridCells.json",
+                        inputFile.getAbsolutePath(),
                         outputFile.getAbsolutePath()
                 };
 
@@ -380,8 +351,6 @@ public class DmiService {
                 Process proc = new ProcessBuilder(args).start();
 
                 //wait for gdal to finish and print exit code
-
-
                 int exit = proc.waitFor();
                 System.out.println("GDAL exit code: " + exit);
 
