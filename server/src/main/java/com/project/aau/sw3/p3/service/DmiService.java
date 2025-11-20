@@ -329,6 +329,7 @@ public class DmiService {
 
             try {
                 //this terminal command takes a geoJSON-file (inputFile = precipitationGridCells.json) and creates a geoTiff (outputFile)
+                //For more information about the GDAL command can be find in README.md
                 String[] args = new String[]{
                         gdalPath,
                         "-sql", "SELECT * FROM precipitationGridCells WHERE step = '" + timeSteps.get(i) + "'",
