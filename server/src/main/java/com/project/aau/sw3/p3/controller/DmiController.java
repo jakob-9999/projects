@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController // Tells Spring, this class hadnles http request
@@ -59,6 +60,11 @@ public class DmiController {
     @GetMapping("/dmi-dini-bbox/get-grid")
     public ObjectNode getGridCellFeatureCollection() {
         return dmiService.buildDmiGrid();
+    }
+
+    @PostMapping("/create-tif-files")
+    public void createTifFiles() throws IOException {
+        dmiService.projectGrids();
     }
 }
 

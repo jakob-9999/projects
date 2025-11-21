@@ -1,26 +1,26 @@
 package com.project.aau.sw3.p3.service;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.aau.sw3.p3.model.TotalPrecipitation;
 import com.project.aau.sw3.p3.model.DmiPoint;
 import com.project.aau.sw3.p3.model.GridCell;
 import com.project.aau.sw3.p3.repository.GridRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.project.aau.sw3.p3.repository.DmiPointRepo;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 
 @Service
@@ -53,6 +53,10 @@ public class DmiService {
                     + "&parameter-name=total-precipitation,latitude,longitude"
                     + "&crs=crs84&f=GeoJSON&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
+    //getting the gdal path from the application-local.yaml file
+    @Value("${gdal.path}")
+    private String gdalPath;
+
     public Map <String, Object> fetchDmiData() {
         try {
             // For HTTP requests
@@ -67,9 +71,6 @@ public class DmiService {
 
             System.out.println("DMI API Response:");
             //System.out.println(json);
-
-            //just an example: will look at the type
-            System.out.println("JSON type: " + data.get("type"));
 
             // return the map in browser
             return data;
@@ -104,13 +105,6 @@ public class DmiService {
 
             //convert to the model class "TotalPrecipitation"
             TotalPrecipitation tp = objectMapper.convertValue(totalPrecipObj, TotalPrecipitation.class);
-
-            System.out.println("Number of values: " + tp.getValues().size());
-            System.out.println("First value: " + tp.getValues().get(0));
-
-
-            //just an example: will look at the type
-            System.out.println("JSON type: " + root.get("type"));
 
             // return the map in browser
             return tp;
@@ -184,7 +178,7 @@ public class DmiService {
             //get the "t" part from the "axes"-part
             Map<String, Object> t = (Map<String, Object>) axes.get("t");
 
-            //get the "valurs" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
+            //get the "values" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
             List<String> tValues = objectMapper.convertValue(t.get("values"),
                     new TypeReference<List<String>>() {}
             );
@@ -294,16 +288,98 @@ public class DmiService {
             feature.set("properties", properties);
 
             features.add(feature);
-
-            /*try {
-                JsonNode featureNode = objectMapper.readTree(feature);
-                features.add(featureNode);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }*/
         });
 
         featureCollection.set("features", features);
         return featureCollection;
+    }
+
+    public void projectGrids() throws IOException {
+        ObjectNode dmiGrid = buildDmiGrid();
+        ObjectMapper mapper = new ObjectMapper();
+
+        //create a file object
+        File inputFile = new File("precipitationGridCells.json");
+        try {
+            //write json to a file, "file" is the file to save it in, "dmiGrid" is the json to save
+            mapper.writeValue(inputFile, dmiGrid);
+
+        } catch (IOException e) {
+            //when using writeValue, we have to catch for IOException
+            throw new RuntimeException(e);
+        }
+
+        //finding all timesteps in DB
+        List<LocalDateTime> timeSteps = gridRepo.findAllTimeSteps();
+
+        String basePath = System.getProperty("user.dir");
+        System.out.println("base path: " + basePath);
+
+        File gridDir;
+        //if the application is started in the terminal using maven
+        if (basePath.endsWith("server")) {
+            //go one level up and normalize the path by using getCanonicalFile(), which means it removed any "." or ".." in the path
+            // this means it goes from "AAU-SW3-P3/server/../client/public/grids/" to "AAU-SW3-P3/client/public/grids/"
+            //getCanonicalFile, return  the full path to the given directory
+            gridDir = new File(basePath, "../client/public/grids/").getCanonicalFile();
+        } else {
+            //use the path relative to the project root
+            gridDir = new File(basePath, "client/public/grids/").getCanonicalFile();
+        }
+
+        for (int i = 0; i < timeSteps.size(); i++) {
+            String fileName = "grid" + i + ".tif";
+            File outputFile = new File(gridDir, fileName);
+            System.out.println(outputFile);
+            File parent = outputFile.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();  // create directory if it doesn't exist
+            }
+            if (!parent.canWrite()) {
+                try {
+                    throw new IOException("Directory can not be written to: " + parent.getAbsolutePath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            try {
+                //this terminal command takes a geoJSON-file (inputFile = precipitationGridCells.json) and creates a geoTiff (outputFile)
+                //For more information about the GDAL command can be find in README.md
+                String[] args = new String[]{
+                        gdalPath,
+                        "-sql", "SELECT * FROM precipitationGridCells WHERE step = '" + timeSteps.get(i) + "'",
+                        "-a", "nearest:radius1=0.05:radius2=0.05:nodata=-9999",
+                        "-txe", "10.0689697", "10.2639771",
+                        "-tye", "56.1045981", "56.197728",
+                        "-tr", "0.001", "0.001",
+                        "-of", "GTiff",
+                        "-ot", "Float32",
+                        "-co", "COMPRESS=LZW",
+                        "-a_srs", "EPSG:4326",
+                        "-l", "precipitationGridCells",
+                        "-zfield", "total-precipitation",
+                        inputFile.getAbsolutePath(),
+                        outputFile.getAbsolutePath()
+                };
+
+                //ProcessBuilder makes it possible to start external programs from Java
+                //this includes commandline programs like GDAL
+                Process proc = new ProcessBuilder(args).start();
+
+                //wait for gdal to finish and print exit code
+                int exit = proc.waitFor();
+                System.out.println("GDAL exit code: " + exit);
+
+                //if gdal fails, print message
+                if (exit != 0) {
+                    System.err.println("GDAL failed!");
+                }
+
+            } catch (IOException | InterruptedException e) {
+                //prints detailed error message
+                e.printStackTrace();
+            }
+        }
     }
 }
