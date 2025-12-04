@@ -384,10 +384,10 @@ public class DmiService {
     }
     public void loadGridOnStartup() {
         if (gridRepo.count() == 0) {
-            System.out.println("Grid empty → fetching DMI bbox grid...");
+            System.out.println("Grid is empty. fetching DMI bbox grid...");
             saveBBox();
         } else {
-            System.out.println("Grid already exists → skipping DMI fetch.");
+            System.out.println("Grid already exists. skipping DMI fetch.");
         }
     }
 }
