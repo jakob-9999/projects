@@ -32,6 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### Node modules ###
+node_modules/
+
 client/package-lock.json
 
 ### the yaml file ###
