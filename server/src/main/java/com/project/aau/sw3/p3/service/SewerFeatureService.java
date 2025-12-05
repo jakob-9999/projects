@@ -154,4 +154,16 @@ public class SewerFeatureService {
             return out;
         }
     }
+
+    public void loadSewageLandData(){
+        long count = sewerFeatureRepo.count();
+
+        if(count == 0){
+            System.out.println("No sewage-land-data found. importing...");
+            createSewagelandFeatures();
+        } else {
+            System.out.println("Sewage-land-data found. " + count +
+                    " sewage-land-data has already been loaded. Skipping import...");
+        }
+    }
 }
