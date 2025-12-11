@@ -22,7 +22,7 @@ export default function SewagelandLayer() {
                 const color = getSewagelandColor(type);
                 return {
                     fillColor: color, // Color of the polygon
-                    fillOpacity: 0.4,
+                    fillOpacity: 0.7,
                     color: "#000", // Color of the border
                     weight: 0.5, // Thickness of the border
                 };

@@ -1,16 +1,11 @@
 export function getSewagelandColor(type) {
-
     if (type?.includes("Fælleskloakeret"))
-        return "#0D114F";
-
+        return "#4A1F00";
     if (type?.includes("Separatkloakeret"))
-        return "#003CFF";
-
+        return "#B84D00";
     if (type?.includes("Spildevandskloakeret"))
-        return "#5A7CFF";
-
+        return "#FF7F32";
     if (type?.includes("Ukloakeret"))
-        return "#D6E0FF";
-
-    return "#90A4C4";
+        return "#B0B0B0";
+    return "#888888";
 }
