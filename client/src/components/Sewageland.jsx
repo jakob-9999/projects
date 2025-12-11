@@ -27,9 +27,6 @@ export default function SewagelandLayer() {
                     weight: 0.5, // Thickness of the border
                 };
             }}
-            onEachFeature={(feature, layer) => {
-                layer.bindPopup(`${feature.properties.vaerd1201a}`);
-            }}
         />
     );
 }
