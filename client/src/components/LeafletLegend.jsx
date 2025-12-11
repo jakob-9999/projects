@@ -27,7 +27,7 @@ export default function LeafletLegend({ map }) {
 
             // Precipitation categories (bottom)
             const rain = [
-                { label: "0.5-5 mm", color: "lightblue" },
+                { label: "0.5–5 mm", color: "lightblue" },
                 { label: "5–10 mm", color: "dodgerblue" },
                 { label: "10+ mm", color: "blue" }
             ];
