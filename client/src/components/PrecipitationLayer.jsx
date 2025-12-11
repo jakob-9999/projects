@@ -51,16 +51,12 @@ export default function PrecipitationLayer({ onSliderMouseDown, onSliderMouseUp}
                         key={i}
                         bounds={bounds}
                         pathOptions={{
+                            stroke: false,
                             color: color,
                             fillColor: color,
-                            fillOpacity: 0.3,
+                            fillOpacity: 0.5,
                         }}
                     >
-                        <Popup>
-                            <b>Rain:</b> {value} mm/h
-                            <br />
-                            <b>Time:</b> {feature.properties.step}
-                        </Popup>
                     </Rectangle>
                 );
             })}
