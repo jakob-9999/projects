@@ -29,7 +29,6 @@ export default function MapRoot() {
                     zIndex: 1,
                     height: "100vh",
                     width: "100vw",
-                    borderRadius: "12px",
                     boxShadow: "0 0 20px rgba(0,0,0,0.4)",
                 }}
             >
