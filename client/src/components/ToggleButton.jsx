@@ -1,6 +1,6 @@
 import * as React from 'react';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import LandscapeIcon from '@mui/icons-material/Landscape';
+import OilBarrelIcon from '@mui/icons-material/OilBarrel';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Box from '@mui/material/Box';
@@ -41,7 +41,7 @@ export default function VerticalToggleButtons({
                     selected={showSewage}
                     onClick={() => setShowSewage(prev => !prev)}
                 >
-                    <LandscapeIcon />
+                    <OilBarrelIcon />
                 </ToggleButton>
 
                 <ToggleButton
