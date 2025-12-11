@@ -7,6 +7,7 @@ import SewagelandLayer from "./components/Sewageland";
 import PrecipitationLayer from "./components/PrecipitationLayer.jsx";
 import MapDraggingController from "./components/MapDraggingController";
 import VerticalToggleButtons from "./components/ToggleButton";
+import LegendWrapper from "./components/LegendWrapper";
 
 // This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
@@ -41,6 +42,8 @@ export default function MapRoot() {
                 <MapDraggingController isDraggingEnabled={isDraggingEnabled}/>
 
                 {/* Layer components */}
+
+                <LegendWrapper />
 
                 {/*Show/hide Sewageland*/}
                 {showSewage && <SewagelandLayer />}
