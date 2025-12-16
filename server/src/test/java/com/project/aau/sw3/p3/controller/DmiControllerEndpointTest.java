@@ -15,9 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// This is a unit test
-// Tests regarding endpoints in the DmiController class.
-// Tests in here will test if the endpoints are reachable and verify if they are calling their expected method.
+//This is a unit test
+//Tests regarding endpoints in the DmiController class.
+//Tests in here will test if the endpoints are reachable and verify if they are calling their expected method.
 @WebMvcTest(DmiController.class)
 public class DmiControllerEndpointTest {
 
@@ -30,7 +30,7 @@ public class DmiControllerEndpointTest {
     @MockitoBean
     private DmiService dmiService;
 
-    // Testing if the endpoint is reachable and verifies that the saveDmiDiniPoint() method is invoked in the endpoint
+    //Testing if the endpoint is reachable and verifies that the saveDmiDiniPoint() method is invoked in the endpoint
     @Test
     public void postDmiDiniPointEndpointCallsService() throws Exception {
 
@@ -38,11 +38,11 @@ public class DmiControllerEndpointTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // testing if the saveDmiDiniPoint() method was invoked in the endpoint method
+        //Testing if the saveDmiDiniPoint() method was invoked in the endpoint method
         verify(dmiService).saveDmiDiniPoint();
     }
 
-    // Testing if the endpoint is reachable and verifies that the findById() method is invoked in the endpoint
+    //Testing if the endpoint is reachable and verifies that the findById() method is invoked in the endpoint
     @Test
     public void getDmiDiniPointEndpointCallsRepo() throws Exception {
 
@@ -50,7 +50,7 @@ public class DmiControllerEndpointTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // testing if the findById() method was invoked with any id in the endpoint method
+        //Testing if the findById() method was invoked with any id in the endpoint method
         verify(dmiPointRepo).findById(any());
     }
 

@@ -9,13 +9,13 @@ import MapDraggingController from "./components/MapDraggingController";
 import VerticalToggleButtons from "./components/ToggleButton";
 import LegendWrapper from "./components/LegendWrapper";
 
-// This is the root component of the map, it contains the map container and the layers
+//This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
 
-    // This is needed so we know if the map should be draggable or not, when using the slider it should not be
+    //This is needed so we know if the map should be draggable or not, when using the slider it should not be
     const [isDraggingEnabled, setIsDraggingEnabled] = useState(true);
 
-    // This is needed so we can toggle the visibility of the layers
+    //This is needed so we can toggle the visibility of the layers
     const [showSewage, setShowSewage] = useState(true);
     const [showPrecipitation, setShowPrecipitation] = useState(true);
 

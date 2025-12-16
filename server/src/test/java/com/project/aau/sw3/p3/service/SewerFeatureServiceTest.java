@@ -24,12 +24,12 @@ public class SewerFeatureServiceTest {
     @Test
     public void testCreateSewagelandFeatureAndTriggersRepoSave() throws Exception {
 
-        // Mock the classes used in the createSewagelandFeatures() method
+        //Mock the classes used in the createSewagelandFeatures() method
         SewerFeatureRepo sewerFeatureRepo = mock(SewerFeatureRepo.class); // No actual DB connection since it's mocked
         RestTemplate restTemplate = mock(RestTemplate.class); // No actual network traffic since it's mocked
         ObjectMapper objectMapper = Mockito.spy(new ObjectMapper()); // We use a spy since we are interested in some methods inside the ObjectMapper
 
-        // Building the structure the service expects (this is the structure coming from the plandata GET request
+        //Building the structure the service expects (this is the structure coming from the plandata GET request)
         Map<String, Object> root = new HashMap<>();
         root.put("features", List.of(
                 Map.of(
@@ -52,36 +52,36 @@ public class SewerFeatureServiceTest {
 
         String json = objectMapper.writeValueAsString(root);
 
-        // Return a random body when we call restTemplate.getForEntity, we kind of mock the body below, so this body is ignored
+        //Return a random body when we call restTemplate.getForEntity, we kind of mock the body below, so this body is ignored
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(ResponseEntity.ok(json));
 
-        // Create an instance of SewerFeatureService to gain access to the createSewagelandFeatures method we're interested in testing
+        //Create an instance of SewerFeatureService to gain access to the createSewagelandFeatures method we're interested in testing
         SewerFeatureService sewerFeatureService = new SewerFeatureService(sewerFeatureRepo, restTemplate, objectMapper);
 
         sewerFeatureService.createSewagelandFeatures();
 
-        // Verifying that the saveAll method is invoked on any List in the createSewagelandFeatures method.
+        //Verifying that the saveAll method is invoked on any List in the createSewagelandFeatures method.
         verify(sewerFeatureRepo).saveAll(anyList());
     }
 
     @Test
     public void testBuildSewerFeatureCollection() {
 
-        // Mock the classes used in the createSewagelandFeatures() method
+        //Mock the classes used in the createSewagelandFeatures() method
         SewerFeatureRepo sewerFeatureRepo = mock(SewerFeatureRepo.class); // No actual DB connection since it's mocked
         RestTemplate restTemplate = mock(RestTemplate.class); // No actual network traffic since it's mocked
         ObjectMapper objectMapper = Mockito.spy(new ObjectMapper()); // We use a spy since we are interested in some methods inside the ObjectMapper
         List<SewerFeature> sewerFeatures = new ArrayList<>();
 
-        // Create an instance of SewerFeatureService to gain access to the buildSewerFeatureCollection method we're interested in testing
+        //Create an instance of SewerFeatureService to gain access to the buildSewerFeatureCollection method we're interested in testing
         SewerFeatureService sewerFeatureService = new SewerFeatureService(sewerFeatureRepo, restTemplate, objectMapper);
 
         ObjectNode featureCollection = sewerFeatureService.buildSewerFeatureCollection();
 
-        // Verifying that the ObjectNode featureCollection is returned as a non-null value from the buildSewerFeatureCollection method
+        //Verifying that the ObjectNode featureCollection is returned as a non-null value from the buildSewerFeatureCollection method
         assertNotNull(featureCollection);
 
-        // Verifying that the findAll() method is invoked in the buildSewerFeatureCollection method
+        //Verifying that the findAll() method is invoked in the buildSewerFeatureCollection method
         verify(sewerFeatureRepo).findAll();
     }
 }

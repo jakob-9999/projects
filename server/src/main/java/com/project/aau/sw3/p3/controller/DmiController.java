@@ -13,20 +13,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.Map;
 
-@RestController // Tells Spring, this class hadnles http request
+@RestController // Tells Spring, this class handel's http request
 @RequestMapping("/api")
 public class DmiController {
 
     private final DmiPointRepo dmiPointRepo;
     private final DmiService dmiService;
 
-    // Constructor injection – dette fortæller spring, at dmicontroller har brug for dmiservice.
+    // Constructor injection – This tells Spring that the DmiController needs DmiService
     public DmiController(DmiPointRepo dmiPointRepo, DmiService dmiService) {
         this.dmiPointRepo = dmiPointRepo;
         this.dmiService = dmiService;
     }
 
-    // GET-endpoint, som du kan kalde i browseren
+    // GET-endpoint, which you can call in the browser
     @GetMapping("/dmi")
     public Map<String, Object> getDmiData() {
         // Calls fetchDmiData from DmiService and that method returns json, why it shows in browser
@@ -45,13 +45,13 @@ public class DmiController {
         return dmiPointRepo.findById(1L).orElse(null);
     }
 
-    // persists a single Point from the DINI model from DMI Open Data in our DB
+    // Persists a single Point from the DINI model from DMI Open Data in our DB
     @PostMapping("/dmi-dini/point")
     public void saveDmiDiniPoint() {
         dmiService.saveDmiDiniPoint();
     }
 
-    // persists every grid cell from the bbox in our DB
+    // Persists every grid cell from the bbox in our DB
     @PostMapping("/dmi-dini-bbox/bbox-point")
     public void saveBBox() {
         dmiService.saveBBox();

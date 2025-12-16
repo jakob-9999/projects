@@ -10,7 +10,7 @@ spring:
 
   jpa:
     show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect # Tells JPA which database language to interpret
+    database-platform: org.hibernate.dialect.PostgreSQLDialect #Tells JPA which database language to interpret
 
     hibernate:
       ddl-auto: create

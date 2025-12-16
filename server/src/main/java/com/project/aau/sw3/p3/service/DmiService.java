@@ -39,21 +39,21 @@ public class DmiService {
         this.objectMapper = objectMapper;
     }
 
-    // API Url der henter data ( 4 parametre)
+    // API Url that retrieves data ( 4 parameters)
     private static final String DMI_URL =
             "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf/position"
                     + "?coords=POINT(10.2039 56.1629)"
                     + "&parameter-name=total-precipitation"
                     + "&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
-    // endpoint for the bbox
+    // Endpoint for the bbox
     private static final String DMI_URL2 =
             "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf"
                     + "/bbox?bbox=10.0689697,56.1045981,10.2639771,56.197728"
                     + "&parameter-name=total-precipitation,latitude,longitude"
                     + "&crs=crs84&f=GeoJSON&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
-    //getting the gdal path from the application-local.yaml file
+    //Getting the gdal path from the application-local.yaml file
     @Value("${gdal.path}")
     private String gdalPath;
 
@@ -66,17 +66,17 @@ public class DmiService {
             // Save as JSON String
             String json = response.getBody();
 
-            //converts JSON to a Map
+            //Converts JSON to a Map
             Map<String, Object> data = objectMapper.readValue(json, Map.class);
 
             System.out.println("DMI API Response:");
             //System.out.println(json);
 
-            // return the map in browser
+            //Return the map in browser
             return data;
 
         } catch (Exception e) {
-            //returns error as JSON
+            //Returns error as JSON
             return Map.of("error", "Fejl ved hentning af DMI data: " + e.getMessage());
         }
     }
@@ -94,23 +94,23 @@ public class DmiService {
             //System.out.println(json);
 
 
-            //converts the whole JSON to a Map
+            //Converts the whole JSON to a Map
             Map<String, Object> root = objectMapper.readValue(json, Map.class);
 
-            //get the "ranges" part from the json
+            //Get the "ranges" part from the json
             Map<String, Object> ranges = (Map<String, Object>) root.get("ranges");
 
-            //get the "total-precipitation" part, from the ranges part
+            //Get the "total-precipitation" part, from the ranges part
             Object totalPrecipObj = ranges.get("total-precipitation");
 
-            //convert to the model class "TotalPrecipitation"
+            //Convert to the model class "TotalPrecipitation"
             TotalPrecipitation tp = objectMapper.convertValue(totalPrecipObj, TotalPrecipitation.class);
 
-            // return the map in browser
+            //Return the map in browser
             return tp;
 
         } catch (Exception e) {
-            //error message in console. tells where in the code it went wrong
+            //Error message in console. Tells where in the code it went wrong
             e.printStackTrace();
             return null;
         }
@@ -118,24 +118,24 @@ public class DmiService {
 
     public void saveDmiDiniPoint() {
         try {
-            // For HTTP requests
-            // GET-request to DMI’s API, get answer as String)
+            //For HTTP requests
+            //GET-request to DMI’s API, get answer as String)
             ResponseEntity<String> response = restTemplate.getForEntity(DMI_URL, String.class);
 
-            // Save as JSON String
+            //Save as JSON String
             String json = response.getBody();
 
             //Create ObjectMapper to convert JSON strings into Java objects
             //converts the whole JSON to a Map
             Map<String, Object> root = objectMapper.readValue(json, Map.class);
 
-            //get the "ranges" part from the json
+            //Get the "ranges" part from the json
             Map<String, Object> ranges = (Map<String, Object>) root.get("ranges");
 
-            //get the "total-precipitation" part from the "ranges"-part
+            //Get the "total-precipitation" part from the "ranges"-part
             Map<String, Object> totalPrecipitation = (Map<String, Object>) ranges.get("total-precipitation");
 
-            //get the "values" from "total-precipitation" part, and save it as a list
+            //Get the "values" from "total-precipitation" part, and save it as a list
             //totalPrecipitation.get("values") returns List<Object>, not List<Double>. Must be converted
             //mapper.convertValue takes two arguments: 1) what to convert, 2) what I want it converted to
             //TypeReference is an anonymous type that tells Jackson what type i want
@@ -146,110 +146,110 @@ public class DmiService {
             //get the "domain" part from the json
             Map<String, Object> domain = (Map<String, Object>) root.get("domain");
 
-            //get the "axes" part from the "domain"-part
+            //Get the "axes" part from the "domain"-part
             Map<String, Object> axes = (Map<String, Object>) domain.get("axes");
 
-            //get the "x" part from the "axes"-part
+            //Get the "x" part from the "axes"-part
             Map<String, Object> x = (Map<String, Object>) axes.get("x");
 
-            //get the "values" from "x" part, convert to List<Double> and save it
+            //Get the "values" from "x" part, convert to List<Double> and save it
             List<Double> xValues = objectMapper.convertValue(x.get("values"),
                     new TypeReference<List<Double>>() {}
             );
 
-            //get the "bounds" from "x" part, convert to List<Double> and save it
+            //Get the "bounds" from "x" part, convert to List<Double> and save it
             List<Double> xBounds = objectMapper.convertValue(x.get("bounds"),
                     new TypeReference<List<Double>>() {}
             );
 
-            //get the "y" part from the "axes"-part
+            //Get the "y" part from the "axes"-part
             Map<String, Object> y = (Map<String, Object>) axes.get("y");
 
-            //get the "values" from "y" part, convert to List<Double> and save it
+            //Get the "values" from "y" part, convert to List<Double> and save it
             List<Double> yValues = objectMapper.convertValue(y.get("values"),
                     new TypeReference<List<Double>>() {}
             );
 
-            //get the "bounds" from "x" part, convert to List<Double> and save it
+            //Get the "bounds" from "x" part, convert to List<Double> and save it
             List<Double> yBounds = objectMapper.convertValue(y.get("bounds"),
                     new TypeReference<List<Double>>() {}
             );
 
-            //get the "t" part from the "axes"-part
+            //Get the "t" part from the "axes"-part
             Map<String, Object> t = (Map<String, Object>) axes.get("t");
 
-            //get the "values" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
+            //Get the "values" from "t" part, convert to List<String> and save it. List<String> because time values are strings in json
             List<String> tValues = objectMapper.convertValue(t.get("values"),
                     new TypeReference<List<String>>() {}
             );
 
-            //create DmiPoint object
+            //Create DmiPoint object
             DmiPoint dmiPoint = new DmiPoint(precipitationValues, xValues, xBounds, yValues, yBounds, tValues);
 
-            //save in db
+            //Save in db
             dmiPointRepo.save(dmiPoint);
 
         } catch (Exception e) {
-            //error message in console. tells where in the code it went wrong
+            //Error message in console. Tells where in the code it went wrong
             e.printStackTrace();
         }
     }
 
     public void saveBBox() {
         try {
-            // GET-request bbox api, get answer as String
+            //GET-request bbox api, get answer as String
             ResponseEntity<String> response = restTemplate.getForEntity(DMI_URL2, String.class);
 
-            // Save as JSON String
+            //Save as JSON String
             String json = response.getBody();
 
             //Create ObjectMapper to convert JSON strings into Java objects
-            //converts the whole JSON to a Map
+            //Converts the whole JSON to a Map
             Map<String, Object> root = objectMapper.readValue(json, Map.class);
 
             //"features" is a list of feature-objects
             List<Map<String, Object>> features = (List<Map<String, Object>>) root.get("features");
 
-            //loop through features and save each grid cell
+            //Loop through features and save each grid cell
             for (int i = 0; i < features.size(); i++) {
                 Map<String, Object> featureObject = features.get(i);
 
-                //get "geometry" part from the "features"-object
+                //Get "geometry" part from the "features"-object
                 Map<String, Object> geometry = (Map<String, Object>) featureObject.get("geometry");
 
-                //get "coordinates" from the "geometry"-object
+                //Get "coordinates" from the "geometry"-object
                 List<Object> coordinates = (List<Object>) geometry.get("coordinates");
 
-                //convert coordinate-objects to doubles
+                //Convert coordinate-objects to doubles
                 double xCoordinate = ((Number) coordinates.get(0)).doubleValue();
                 double yCoordinate = ((Number) coordinates.get(1)).doubleValue();
 
-                //get "properties" from "features" part
+                //Get "properties" from "features" part
                 Map<String, Object> properties = (Map<String, Object>) featureObject.get("properties");
 
-                //get "total-precipitation" from the "properties"-object
+                //Get "total-precipitation" from the "properties"-object
                 Object totalPrecipitation = properties.get("total-precipitation");
 
-                //convert totalPrecipitation-object to double
+                //Convert totalPrecipitation-object to double
                 double precipitation = ((Number) totalPrecipitation).doubleValue();
 
-                //get "step" from "properties"
+                //Get "step" from "properties"
                 Object step = properties.get("step");
 
-                //convert step-object to a String
+                //Convert step-object to a String
                 String stepString = step.toString();
 
-                //convert step-string to date and time
+                //Convert step-string to date and time
                 LocalDateTime timeStep = ZonedDateTime.parse(stepString).toLocalDateTime();
 
-                //create GridCell object
+                //Create GridCell object
                 GridCell gridCell = new GridCell(xCoordinate, yCoordinate, precipitation, timeStep);
 
-                //save in db
+                //Save in db
                 gridRepo.save(gridCell);
             }
         } catch (Exception e) {
-            //error message in console. tells where in the code it went wrong
+            //Error message in console. tells where in the code it went wrong
             e.printStackTrace();
         }
     }
@@ -257,13 +257,13 @@ public class DmiService {
     public ObjectNode buildDmiGrid() {
         ObjectNode featureCollection = objectMapper.createObjectNode();
 
-        //create empty featureCollection to adhere to GeoJSON format (needed in frontend)
+        //Create empty featureCollection to adhere to GeoJSON format (needed in frontend)
         featureCollection.put("type", "FeatureCollection");
 
-        //create JSON-array to adhere to GeoJSON format
+        //Create JSON-array to adhere to GeoJSON format
         ArrayNode features = objectMapper.createArrayNode();
 
-        //add "type" and "geometry" to adhere to GeoJSON format
+        //Add "type" and "geometry" to adhere to GeoJSON format
         gridRepo.findAll().forEach(gridCell -> {
 
             //"type"
@@ -298,32 +298,32 @@ public class DmiService {
         ObjectNode dmiGrid = buildDmiGrid();
         ObjectMapper mapper = new ObjectMapper();
 
-        //create a file object
+        //Create a file object
         File inputFile = new File("precipitationGridCells.json");
         try {
-            //write json to a file, "file" is the file to save it in, "dmiGrid" is the json to save
+            //Write json to a file, "file" is the file to save it in, "dmiGrid" is the json to save
             mapper.writeValue(inputFile, dmiGrid);
 
         } catch (IOException e) {
-            //when using writeValue, we have to catch for IOException
+            //When using writeValue, we have to catch for IOException
             throw new RuntimeException(e);
         }
 
-        //finding all timesteps in DB
+        //Finding all timesteps in DB
         List<LocalDateTime> timeSteps = gridRepo.findAllTimeSteps();
 
         String basePath = System.getProperty("user.dir");
         System.out.println("base path: " + basePath);
 
         File gridDir;
-        //if the application is started in the terminal using maven
+        //If the application is started in the terminal using maven
         if (basePath.endsWith("server")) {
-            //go one level up and normalize the path by using getCanonicalFile(), which means it removed any "." or ".." in the path
+            //Go one level up and normalize the path by using getCanonicalFile(), which means it removed any "." or ".." in the path
             // this means it goes from "AAU-SW3-P3/server/../client/public/grids/" to "AAU-SW3-P3/client/public/grids/"
             //getCanonicalFile, return  the full path to the given directory
             gridDir = new File(basePath, "../client/public/grids/").getCanonicalFile();
         } else {
-            //use the path relative to the project root
+            //Use the path relative to the project root
             gridDir = new File(basePath, "client/public/grids/").getCanonicalFile();
         }
 
@@ -333,7 +333,7 @@ public class DmiService {
             System.out.println(outputFile);
             File parent = outputFile.getParentFile();
             if (!parent.exists()) {
-                parent.mkdirs();  // create directory if it doesn't exist
+                parent.mkdirs();  //Create directory if it doesn't exist
             }
             if (!parent.canWrite()) {
                 try {
@@ -344,7 +344,7 @@ public class DmiService {
             }
 
             try {
-                //this terminal command takes a geoJSON-file (inputFile = precipitationGridCells.json) and creates a geoTiff (outputFile)
+                //This terminal command takes a geoJSON-file (inputFile = precipitationGridCells.json) and creates a geoTiff (outputFile)
                 //For more information about the GDAL command can be find in README.md
                 String[] args = new String[]{
                         gdalPath,
@@ -364,20 +364,20 @@ public class DmiService {
                 };
 
                 //ProcessBuilder makes it possible to start external programs from Java
-                //this includes commandline programs like GDAL
+                //This includes commandline programs like GDAL
                 Process proc = new ProcessBuilder(args).start();
 
-                //wait for gdal to finish and print exit code
+                //Wait for gdal to finish and print exit code
                 int exit = proc.waitFor();
                 System.out.println("GDAL exit code: " + exit);
 
-                //if gdal fails, print message
+                //If gdal fails, print message
                 if (exit != 0) {
                     System.err.println("GDAL failed!");
                 }
 
             } catch (IOException | InterruptedException e) {
-                //prints detailed error message
+                //Prints detailed error message
                 e.printStackTrace();
             }
         }
