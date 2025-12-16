@@ -12,11 +12,14 @@ export default function SewagelandLayer({pane, visible, hasFitRef}) {
 
     useEffect(() => {
         if (!data) return;
+        //The hasFitRef remembers if we already zoomed the map to the sewer layer. If this is true, we stop here so the map does NOT jump back
+        //when the layer is toggled on and off
         if (hasFitRef.current) return;
 
         const bounds = geoJSON(data).getBounds();
         if (bounds.isValid()) {
             map.fitBounds(bounds);
+            //Here we mark that the zoom has happened and then remember that so we don't run it again
             hasFitRef.current = true;
         }
     }, [data, map, hasFitRef]);
@@ -26,20 +29,16 @@ export default function SewagelandLayer({pane, visible, hasFitRef}) {
     return (
         <GeoJSON
             data={data}
-            pane={pane}
+            pane={pane} //Controls which layer position this has compared to other layers
             style={(feature) => {
                 const type = feature.properties.vaerd1201a;
                 const color = getSewagelandColor(type);
                 return {
-                    fillColor: color,
-                    fillOpacity: visible ? 0.7 : 0.0,
-                    color: "#000",
-                    opacity: visible ? 1.0 : 0.0,
-                    weight: 0.5
-                    /*fillColor: color, // Color of the polygon
-                    fillOpacity: 0.5,
+                    fillColor: color, // Color of the polygon
+                    fillOpacity: visible ? 0.7 : 0.0, //If visible is false, the layer is "hidden" but still mounted so it doesn't reset
                     color: "#000", // Color of the border
-                    weight: 0.5, // Thickness of the border*/
+                    opacity: visible ? 1.0 : 0.0,
+                    weight: 0.5 // Thickness of the border
                 };
             }}
         />

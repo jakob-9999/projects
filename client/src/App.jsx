@@ -11,12 +11,14 @@ import LegendWrapper from "./components/LegendWrapper";
 
 // This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
+    //This ref remembers if the map has already been zoomed to the sewer layer. MapRoot never unmounts, this value
+    //persists even when layers are toggled on and off.
     const sewerHasFitRef = useRef(false);
 
-    // This is needed so we know if the map should be draggable or not, when using the slider it should not be
+    //This is needed so we know if the map should be draggable or not, when using the slider it should not be
     const [isDraggingEnabled, setIsDraggingEnabled] = useState(true);
 
-    // This is needed so we can toggle the visibility of the layers
+    //This is needed so we can toggle the visibility of the layers
     const [showSewage, setShowSewage] = useState(true);
     const [showPrecipitation, setShowPrecipitation] = useState(true);
 
@@ -42,15 +44,15 @@ export default function MapRoot() {
                 {/*Ensures the MapContainer attribute dragging is set dynamically whenever the state of isDraggingEnabled changes*/}
                 <MapDraggingController isDraggingEnabled={isDraggingEnabled}/>
 
-                {/* Layer components */}
+                {/*Layer components*/}
 
                 <LegendWrapper />
 
-
+                {/*Leaflet panes that control which order the layers will be in*/}
                 <Pane name="sewerPane" style={{zIndex: 400}}/>
                 <Pane name="precipitationPane" style={{zIndex: 500}}/>
 
-                {/*Show/hide Sewageland*/}
+                {/*Show/hide Sewageland, visibility is controlled via the "visible" prop, hasFitRef is passed down so the map only auto-zooms once*/}
                 {showSewage && <SewagelandLayer pane = "sewerPane" visible={showSewage} hasFitRef={sewerHasFitRef} />}
 
 
