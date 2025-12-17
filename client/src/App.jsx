@@ -29,8 +29,6 @@ export default function MapRoot() {
                 center={[56.1629, 10.2039]}
                 zoom={11}
                 style={{
-                    //zIndex determines which layer is on top (1 is beneath 2)
-                    //zIndex: 1,
                     height: "100vh",
                     width: "100vw",
                     boxShadow: "0 0 20px rgba(0,0,0,0.4)",
@@ -52,19 +50,19 @@ export default function MapRoot() {
                 <Pane name="sewerPane" style={{zIndex: 400}}/>
                 <Pane name="precipitationPane" style={{zIndex: 500}}/>
 
-                {/*Show/hide Sewageland, visibility is controlled via the "visible" prop, hasFitRef is passed down so the map only auto-zooms once*/}
-                {showSewage && <SewagelandLayer pane = "sewerPane" visible={showSewage} hasFitRef={sewerHasFitRef} />}
+                {/*Show/hide Sewageland, hasFitRef is passed down so the map only auto-zooms once*/}
+                {showSewage && <SewagelandLayer pane = "sewerPane" hasFitRef={sewerHasFitRef} />}
 
 
                 {/*Passing props to ensure the map is not dragging when the slider is moved*/}
                 {/*Show/hide Precipitation*/}
-                    {showPrecipitation && (
-                        <PrecipitationLayer
-                            pane = "precipitationPane"
-                            onSliderMouseDown={() => setIsDraggingEnabled(false)}
-                            onSliderMouseUp={() => setIsDraggingEnabled(true)}
-                        />
-                    )}
+                {showPrecipitation && (
+                    <PrecipitationLayer
+                        pane = "precipitationPane"
+                        onSliderMouseDown={() => setIsDraggingEnabled(false)}
+                        onSliderMouseUp={() => setIsDraggingEnabled(true)}
+                    />
+                )}
 
 
                 {/*Passing control to toggle buttons*/}

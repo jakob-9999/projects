@@ -6,7 +6,7 @@ import { getSewagelandColor } from "../utils/getSewagelandColor.js";
 
 // Component to render the Sewageland layer.
 // It fetches the GeoJSON data from the server and renders it on the map.
-export default function SewagelandLayer({pane, visible, hasFitRef}) {
+export default function SewagelandLayer({pane, hasFitRef}) {
     const map = useMap();
     const data = useSewagelandData();
 
@@ -24,6 +24,7 @@ export default function SewagelandLayer({pane, visible, hasFitRef}) {
         }
     }, [data, map, hasFitRef]);
 
+
     if (!data) return null;
 
     return (
@@ -35,9 +36,9 @@ export default function SewagelandLayer({pane, visible, hasFitRef}) {
                 const color = getSewagelandColor(type);
                 return {
                     fillColor: color, // Color of the polygon
-                    fillOpacity: visible ? 0.7 : 0.0, //If visible is false, the layer is "hidden" but still mounted so it doesn't reset
+                    fillOpacity: 0.7,
                     color: "#000", // Color of the border
-                    opacity: visible ? 1.0 : 0.0,
+                    opacity: 1.0,
                     weight: 0.5 // Thickness of the border
                 };
             }}
