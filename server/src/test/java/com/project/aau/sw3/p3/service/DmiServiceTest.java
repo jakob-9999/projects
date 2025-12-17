@@ -22,14 +22,14 @@ public class DmiServiceTest {
     @Test
     public void saveDmiDiniPointTriggersRepoSave() throws Exception {
 
-        // Mock the classes used in the saveDmiDiniPoint method
-        // We mock out these classes so the method we're calling thinks these classes are real and then continues to the next line
+        //Mock the classes used in the saveDmiDiniPoint method
+        //We mock out these classes so the method we're calling thinks these classes are real and then continues to the next line
         DmiPointRepo dmiPointRepo = mock(DmiPointRepo.class);
         GridRepo gridRepo = mock(GridRepo.class);
         RestTemplate restTemplate = mock(RestTemplate.class);
         ObjectMapper objectMapper = Mockito.spy(new ObjectMapper());
 
-        // Building the structure the service expects (this is the structure coming from the DMI GET request
+        //Building the structure the service expects (this is the structure coming from the DMI GET request)
         Map<String, Object> root = Map.of(
                 "ranges", // Key 1
                 Map.of("total-precipitation",
@@ -45,15 +45,15 @@ public class DmiServiceTest {
         );
         String json = objectMapper.writeValueAsString(root);
 
-        // Return a random body when we call restTemplate.getForEntity, we kind of mock the body below, so this body is ignored
+        //Return a random body when we call restTemplate.getForEntity, we kind of mock the body below, so this body is ignored
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(ResponseEntity.ok(json));
 
-        // Create an instance of DmiService to gain access to the saveDmiDiniPoint method we're interested in testing
+        //Create an instance of DmiService to gain access to the saveDmiDiniPoint method we're interested in testing
         DmiService dmiService = new DmiService(dmiPointRepo, gridRepo, restTemplate, objectMapper);
 
         dmiService.saveDmiDiniPoint();
 
-        // Verifying that the save method save any DmiPoint object in the saveDmiDiniPoint method.
+        //Verifying that the save method save any DmiPoint object in the saveDmiDiniPoint method.
         verify(dmiPointRepo).save(any(DmiPoint.class));
     }
 }

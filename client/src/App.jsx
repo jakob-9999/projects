@@ -9,7 +9,7 @@ import MapDraggingController from "./components/MapDraggingController";
 import VerticalToggleButtons from "./components/ToggleButton";
 import LegendWrapper from "./components/LegendWrapper";
 
-// This is the root component of the map, it contains the map container and the layers
+//This is the root component of the map, it contains the map container and the layers
 export default function MapRoot() {
     //This ref remembers if the map has already been zoomed to the sewer layer. MapRoot never unmounts, this value
     //persists even when layers are toggled on and off.

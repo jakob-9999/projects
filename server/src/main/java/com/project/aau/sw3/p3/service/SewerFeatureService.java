@@ -21,7 +21,7 @@ public class SewerFeatureService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    // Initialize everything needed for transforming coordinates from EPSG:25832 -> EPSG:4326
+    //Initialize everything needed for transforming coordinates from EPSG:25832 -> EPSG:4326
     private static final CoordinateTransform TRANSFORM_25832_TO_4326;
     static {
         CRSFactory crsFactory = new CRSFactory();
@@ -42,7 +42,7 @@ public class SewerFeatureService {
         this.objectMapper = objectMapper;
     }
 
-    // Currently hardcoded to a bbox around Aarhus municipality using EPSG:25832 CRS
+    //Currently hardcoded to a bbox around Aarhus municipality using EPSG:25832 CRS
     private static final String URL = "https://geoserver.plandata.dk/geoserver/wfs"
             + "?service=WFS&version=2.0.0&request=GetFeature"
             + "&typeNames=pdk:theme_pdk_kloakopland_vedtaget_v"
@@ -51,10 +51,10 @@ public class SewerFeatureService {
 
     public void createSewagelandFeatures() {
 
-        // GET-request to plandata’s API
+        //GET-request to plandata’s API
         ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
 
-        // Store the response's body from the API call as a String
+        //Store the response's body from the API call as a String
         String json = response.getBody();
 
         JsonNode root = null;
@@ -89,7 +89,7 @@ public class SewerFeatureService {
             sewerFeatures.add(sewerFeature);
         }
 
-        // We always want the newest data when we fetch this, so we just delete what is already in the DB
+        //We always want the newest data when we fetch this, so we just delete what is already in the DB
         sewerFeatureRepo.deleteAll(sewerFeatureRepo.findAll());
         sewerFeatureRepo.saveAll(sewerFeatures);
     }
@@ -114,9 +114,8 @@ public class SewerFeatureService {
         return featureCollection;
     }
 
-    /**
-     * Reprojects a GeoJSON geometry's coordinates from EPSG:25832 to EPSG:4326 via recursion.
-     */
+
+    //Reprojects a GeoJSON geometry's coordinates from EPSG:25832 to EPSG:4326 via recursion.
     private void reprojectGeometry25832To4326(ObjectNode geometry) {
         if (geometry == null) return;
         JsonNode coords = geometry.get("coordinates");
@@ -126,10 +125,9 @@ public class SewerFeatureService {
         geometry.set("coordinates", reprojected);
     }
 
-    /**
-     * Recursively reprojects coordinates array. If the node is a single position [x, y],
-     * it transforms X/Y; otherwise, it maps over nested arrays until the array is so small it can transform.
-     */
+
+    //Recursively reprojects coordinates array. If the node is a single position [x, y],
+    //It transforms X/Y; otherwise, it maps over nested arrays until the array is so small it can transform.
     private ArrayNode reprojectCoordinatesRecursive(ArrayNode node) {
 
         if (node.size() > 0 && node.get(0).isNumber()) {

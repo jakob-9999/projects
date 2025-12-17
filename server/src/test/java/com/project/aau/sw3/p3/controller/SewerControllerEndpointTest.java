@@ -14,9 +14,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// This is a unit test
-// Tests regarding endpoints in the SewerController class.
-// Tests in here will test if the endpoints are reachable and verify if they are calling their expected method.
+//This is a unit test
+//Tests regarding endpoints in the SewerController class.
+//Tests in here will test if the endpoints are reachable and verify if they are calling their expected method.
 @WebMvcTest(SewerController.class)
 public class SewerControllerEndpointTest {
 
@@ -29,7 +29,7 @@ public class SewerControllerEndpointTest {
     @MockitoBean
     private SewerFeatureService sewerFeatureService;
 
-    // Testing if the endpoint is reachable and verifies that the createSewagelandFeatures() method is invoked in the endpoint
+    //Testing if the endpoint is reachable and verifies that the createSewagelandFeatures() method is invoked in the endpoint
     @Test
     public void postSewagelandFeatureEndpointCallsService() throws Exception {
 
@@ -42,7 +42,7 @@ public class SewerControllerEndpointTest {
         verify(sewerFeatureService).createSewagelandFeatures();
     }
 
-    // Testing if the endpoint is reachable and verifies that the buildSewerFeatureCollection() method is invoked in the endpoint
+    //Testing if the endpoint is reachable and verifies that the buildSewerFeatureCollection() method is invoked in the endpoint
     @Test
     public void getSewagelandFeatureEndpointCallsRepo() throws Exception {
 
@@ -51,7 +51,7 @@ public class SewerControllerEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // testing if the buildSewerFeatureCollection() method was invoked in the endpoint method
+        //Testing if the buildSewerFeatureCollection() method was invoked in the endpoint method
         verify(sewerFeatureService).buildSewerFeatureCollection();
     }
 
