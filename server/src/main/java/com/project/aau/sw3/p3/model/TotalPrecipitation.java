@@ -9,7 +9,6 @@ public class TotalPrecipitation {
     private List<Integer> shape;
     private List<Double> values;
 
-    //getters and setters
 
     public String getType() {
         return type;
