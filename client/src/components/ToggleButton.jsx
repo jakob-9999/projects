@@ -38,6 +38,7 @@ export default function VerticalToggleButtons({
             <ToggleButtonGroup orientation="vertical" exclusive={false}>
 
                 <ToggleButton
+                    value="sewer"
                     selected={showSewage}
                     onClick={() => setShowSewage(prev => !prev)}
                 >
@@ -45,6 +46,7 @@ export default function VerticalToggleButtons({
                 </ToggleButton>
 
                 <ToggleButton
+                    value="precipitation"
                     selected={showPrecipitation}
                     onClick={() => setShowPrecipitation(prev => !prev)}
                 >

@@ -6,7 +6,7 @@ import { getPrecipitationColor} from "../utils/getPrecipitationColor.js";
 import { kmToDegreesOffset } from "../utils/coordinateUtils";
 
 // fetch grid cells
-export default function PrecipitationLayer({ onSliderMouseDown, onSliderMouseUp}) {
+export default function PrecipitationLayer({pane, onSliderMouseDown, onSliderMouseUp}) {
     const [sliderValue, setSliderValue] = useState(0)
     const timeStepGroup = usePrecipitationData();
 
@@ -50,10 +50,12 @@ export default function PrecipitationLayer({ onSliderMouseDown, onSliderMouseUp}
                     <Rectangle
                         key={i}
                         bounds={bounds}
+                        pane = {pane}
                         pathOptions={{
                             color: color,
                             fillColor: color,
-                            fillOpacity: 0.3,
+                            fillOpacity: 0.2,
+                            weight: 0,
                         }}
                     >
                         <Popup>
