@@ -114,7 +114,6 @@ public class SewerFeatureService {
         return featureCollection;
     }
 
-
     //Reprojects a GeoJSON geometry's coordinates from EPSG:25832 to EPSG:4326 via recursion.
     private void reprojectGeometry25832To4326(ObjectNode geometry) {
         if (geometry == null) return;
@@ -124,7 +123,6 @@ public class SewerFeatureService {
         ArrayNode reprojected = reprojectCoordinatesRecursive((ArrayNode) coords);
         geometry.set("coordinates", reprojected);
     }
-
 
     //Recursively reprojects coordinates array. If the node is a single position [x, y],
     //It transforms X/Y; otherwise, it maps over nested arrays until the array is so small it can transform.
