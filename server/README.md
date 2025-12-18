@@ -22,3 +22,11 @@ Port: 5434 \
 User and password is found in the application.yml and the actual password instead of the placeholder.\
 Database: vudp \
 Test Connection and Apply.
+
+# Populating the DB
+If the DB is not populated on startup, due to various reasons, eg.
+- DMI Open Data might in some cases return a status code 429 if too many requests were made with the API key.
+- DMI Open Data might return a 502 Bad Gateway.
+- Plandata is not available.
+
+Then run the POST requests found in: `server/src/main/resources/requests.http`

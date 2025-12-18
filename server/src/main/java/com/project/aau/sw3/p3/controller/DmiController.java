@@ -1,8 +1,5 @@
 package com.project.aau.sw3.p3.controller;
 
-import com.project.aau.sw3.p3.model.TotalPrecipitation;
-import com.project.aau.sw3.p3.model.DmiPoint;
-import com.project.aau.sw3.p3.repository.DmiPointRepo;
 import com.project.aau.sw3.p3.service.DmiService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,44 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
-import java.util.Map;
 
 @RestController // Tells Spring, this class handel's http request
 @RequestMapping("/api")
 public class DmiController {
 
-    private final DmiPointRepo dmiPointRepo;
     private final DmiService dmiService;
 
     // Constructor injection – This tells Spring that the DmiController needs DmiService
-    public DmiController(DmiPointRepo dmiPointRepo, DmiService dmiService) {
-        this.dmiPointRepo = dmiPointRepo;
+    public DmiController(DmiService dmiService) {
         this.dmiService = dmiService;
-    }
-
-    // GET-endpoint, which you can call in the browser
-    @GetMapping("/dmi")
-    public Map<String, Object> getDmiData() {
-        // Calls fetchDmiData from DmiService and that method returns json, why it shows in browser
-            return dmiService.fetchDmiData();
-    }
-
-    @GetMapping("/dmi/precipitation")
-    public TotalPrecipitation getTotalPrecipitation() {
-        return dmiService.fetchTotalPrecipitation();
-    }
-
-    // TODO: Temporary, should be changed to take coordinates, id or another passed in parameter instead of hardcoding an id
-    // Fetches the dmiPoint with ID=1
-    @GetMapping("/dmi-dini/point")
-    public DmiPoint getDmiDiniPoint() {
-        return dmiPointRepo.findById(1L).orElse(null);
-    }
-
-    // Persists a single Point from the DINI model from DMI Open Data in our DB
-    @PostMapping("/dmi-dini/point")
-    public void saveDmiDiniPoint() {
-        dmiService.saveDmiDiniPoint();
     }
 
     // Persists every grid cell from the bbox in our DB
