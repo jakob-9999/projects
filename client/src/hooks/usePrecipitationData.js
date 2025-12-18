@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 
-
 export function usePrecipitationData() {
     const [timeStepGroup, setTimeStepGroup] = useState({});
 

@@ -2,19 +2,15 @@ import { useEffect } from "react";
 import L from "leaflet";
 import "./legend.css";
 
-
-// NEW: Static legend groups for sewage + precipitation
+// Static legend groups for sewage + precipitation
 export default function LeafletLegend({ map }) {
     useEffect(() => {
         if (!map) return;
 
-
         const legend = L.control({ position: "bottomright" });
-
 
         legend.onAdd = function () {
             const div = L.DomUtil.create("div", "info legend");
-
 
             // Sewage categories (top)
             const sewage = [
@@ -24,7 +20,6 @@ export default function LeafletLegend({ map }) {
                 { label: "Ukloakeret", color: "#B0B0B0" }
             ];
 
-
             // Precipitation categories (bottom)
             const rain = [
                 { label: "0.5–5 mm", color: "dodgerblue" },
@@ -32,17 +27,14 @@ export default function LeafletLegend({ map }) {
                 { label: "10+ mm", color: "darkblue" },
             ];
 
-
             // Build sewage section
             div.innerHTML += `<strong>Kloak typer</strong><br>`;
             sewage.forEach(item => {
                 div.innerHTML += `<i style=\"background:${item.color}\"></i>${item.label}<br>`;
             });
 
-
             // Spacer
             div.innerHTML += `<div style='height:10px;'></div>`;
-
 
             // Build rain section
             div.innerHTML += `<strong>Regn mængde</strong><br>`;
@@ -50,15 +42,12 @@ export default function LeafletLegend({ map }) {
                 div.innerHTML += `<i style=\"background:${item.color}\"></i>${item.label}<br>`;
             });
 
-
             return div;
         };
-
 
         legend.addTo(map);
         return () => legend.remove();
     }, [map]);
-
 
     return null;
 }
