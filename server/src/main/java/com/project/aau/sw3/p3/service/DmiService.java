@@ -40,7 +40,7 @@ public class DmiService {
                     + "&crs=crs84&f=GeoJSON&api-key=39d54b14-ff57-4612-85de-f66333bd4b03";
 
     //Getting the gdal path from the application-local.yaml file
-//    @Value("${gdal.path}")
+    @Value("${gdal.path}")
     private String gdalPath;
 
     public void saveBBox() {
