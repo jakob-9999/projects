@@ -31,7 +31,7 @@ public class DmiService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    //constructor
+
     public DmiService(DmiPointRepo dmiPointRepo, GridRepo gridRepo, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.dmiPointRepo = dmiPointRepo;
         this.gridRepo = gridRepo;
@@ -39,7 +39,7 @@ public class DmiService {
         this.objectMapper = objectMapper;
     }
 
-    // API Url that retrieves data ( 4 parameters)
+    // API Url to
     private static final String DMI_URL =
             "https://dmigw.govcloud.dk/v1/forecastedr/collections/harmonie_dini_sf/position"
                     + "?coords=POINT(10.2039 56.1629)"
@@ -70,13 +70,11 @@ public class DmiService {
             Map<String, Object> data = objectMapper.readValue(json, Map.class);
 
             System.out.println("DMI API Response:");
-            //System.out.println(json);
 
             //Return the map in browser
             return data;
 
         } catch (Exception e) {
-            //Returns error as JSON
             return Map.of("error", "Fejl ved hentning af DMI data: " + e.getMessage());
         }
     }
