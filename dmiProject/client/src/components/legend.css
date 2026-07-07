@@ -1,0 +1,15 @@
+.legend {
+    line-height: 18px;
+    color: #0a0a0a;
+    background: white;
+    padding: 8px;
+    border-radius: 6px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.8;
+}

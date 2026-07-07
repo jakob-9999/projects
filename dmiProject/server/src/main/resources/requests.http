@@ -1,0 +1,14 @@
+### creates sewageland GeoJson features in the DB (currently the bbox is set to aarhus, so features in Aarhus municipality is created)
+POST localhost:8080/api/sewageland/features
+
+### returns a FeatureCollection including all the features created in the POST /api/sewageland/features
+localhost:8080/api/sewageland/features
+
+### persists a grid cell of the bbox from DMI Open Data
+POST localhost:8080/api/dmi-dini-bbox/bbox-point
+
+### returns all grid cells (bbox's) from our DB
+localhost:8080/api/dmi-dini-bbox/get-grid
+
+###
+POST localhost:8080/api/create-tif-files
