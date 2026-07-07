@@ -3673,11 +3673,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jakobdinessjensen/Documents/csharp/minibank/minibank.csproj",
+      "projectUniqueName": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/minibank.csproj",
       "projectName": "minibank",
-      "projectPath": "/Users/jakobdinessjensen/Documents/csharp/minibank/minibank.csproj",
+      "projectPath": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/minibank.csproj",
       "packagesPath": "/Users/jakobdinessjensen/.nuget/packages/",
-      "outputPath": "/Users/jakobdinessjensen/Documents/csharp/minibank/obj/",
+      "outputPath": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/jakobdinessjensen/.nuget/NuGet/NuGet.Config"

@@ -2601,11 +2601,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jakobdinessjensen/Documents/csharp/minibank/Tests/Tests.csproj",
+      "projectUniqueName": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/Tests/Tests.csproj",
       "projectName": "Tests",
-      "projectPath": "/Users/jakobdinessjensen/Documents/csharp/minibank/Tests/Tests.csproj",
+      "projectPath": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/Tests/Tests.csproj",
       "packagesPath": "/Users/jakobdinessjensen/.nuget/packages/",
-      "outputPath": "/Users/jakobdinessjensen/Documents/csharp/minibank/Tests/obj/",
+      "outputPath": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/jakobdinessjensen/.nuget/NuGet/NuGet.Config"
@@ -2621,8 +2621,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/Users/jakobdinessjensen/Documents/csharp/minibank/minibank.csproj": {
-              "projectPath": "/Users/jakobdinessjensen/Documents/csharp/minibank/minibank.csproj"
+            "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/minibank.csproj": {
+              "projectPath": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/minibank.csproj"
             }
           }
         }

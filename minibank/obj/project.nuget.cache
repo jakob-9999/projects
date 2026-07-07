@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tzr+i3aUruU=",
+  "dgSpecHash": "n/NfFRUe9gg=",
   "success": true,
-  "projectFilePath": "/Users/jakobdinessjensen/Documents/csharp/minibank/minibank.csproj",
+  "projectFilePath": "/Users/jakobdinessjensen/Documents/p3/AAU-SW3-P3/minibank/minibank.csproj",
   "expectedPackageFiles": [
     "/Users/jakobdinessjensen/.nuget/packages/azure.core/1.47.1/azure.core.1.47.1.nupkg.sha512",
     "/Users/jakobdinessjensen/.nuget/packages/azure.identity/1.14.2/azure.identity.1.14.2.nupkg.sha512",
